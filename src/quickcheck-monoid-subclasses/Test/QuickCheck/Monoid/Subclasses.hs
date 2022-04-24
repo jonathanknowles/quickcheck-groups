@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {- HLINT ignore "Use camelCase" -}
@@ -43,7 +44,14 @@ import Data.Semigroup.Cancellative
     , Reductive (..)
     )
 import Test.QuickCheck
-    ( Arbitrary (..), Property, Testable, checkCoverage, cover, property )
+    ( Arbitrary (..)
+    , Property
+    , Testable
+    , checkCoverage
+    , cover
+    , property
+    , (==>)
+    )
 import Test.QuickCheck.Classes
     ( Laws (..) )
 
@@ -64,8 +72,7 @@ commutativeLaw_basic
     :: (Eq a, Commutative a) => a -> a -> Property
 commutativeLaw_basic a b =
     a <> b == b <> a
-    & cover 5 (a == b) "a == b"
-    & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- LeftReductive
@@ -78,46 +85,59 @@ leftReductiveLaws
 leftReductiveLaws _ = Laws "LeftReductive"
     [ makeLaw "isPrefix"
         $ leftReductiveLaw_isPrefix @a
-    , makeLaw "isPrefix stripPrefix"
-        $ leftReductiveLaw_isPrefix_stripPrefix @a
-    , makeLaw "stripPrefix"
-        $ leftReductiveLaw_stripPrefix @a
+    , makeLaw "isPrefix stripPrefix True"
+        $ leftReductiveLaw_isPrefix_stripPrefix_True @a
+    , makeLaw "isPrefix stripPrefix False"
+        $ leftReductiveLaw_isPrefix_stripPrefix_False @a
+    , makeLaw "stripPrefix Just"
+        $ leftReductiveLaw_stripPrefix_Just @a
+    , makeLaw "stripPrefix_Nothing"
+        $ leftReductiveLaw_stripPrefix_Nothing @a
     ]
 
 leftReductiveLaw_isPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_isPrefix a b =
     a `isPrefixOf` (a <> b)
-    & cover 5 (a == b) "a == b"
-    & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_isPrefix_stripPrefix
-    :: LeftReductive a => a -> a -> Property
-leftReductiveLaw_isPrefix_stripPrefix a b =
+    :: (Eq a, LeftReductive a) => a -> a -> Property
+leftReductiveLaw_isPrefix_stripPrefix a b = property $
     isPrefixOf a b == isJust (stripPrefix a b)
-    & cover 5
-        (a `isPrefixOf` b)
-        "a `isPrefixOf` b"
-    & cover 5
-        (not (a `isPrefixOf` b))
-        "not (a `isPrefixOf` b)"
-    & cover 5
-        (isJust (stripPrefix a b))
-        "isJust (stripPrefix a b)"
-    & cover 5
-        (isNothing (stripPrefix a b))
-        "isNothing (stripPrefix a b)"
+
+leftReductiveLaw_isPrefix_stripPrefix_True
+    :: (Eq a, LeftReductive a) => a -> a -> Property
+leftReductiveLaw_isPrefix_stripPrefix_True a b =
+    a `isPrefixOf` (a <> b)
+        ==> leftReductiveLaw_isPrefix_stripPrefix a (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+leftReductiveLaw_isPrefix_stripPrefix_False
+    :: (Eq a, LeftReductive a) => a -> a -> Property
+leftReductiveLaw_isPrefix_stripPrefix_False a b =
+    not (a `isPrefixOf` b)
+        ==> leftReductiveLaw_isPrefix_stripPrefix a b
+    & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_stripPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_stripPrefix a b =
+leftReductiveLaw_stripPrefix a b = property $
     maybe b (a <>) (stripPrefix a b) == b
-    & cover 5
-        (isNothing (stripPrefix a b))
-        "isNothing (stripPrefix a b)"
-    & cover 5
-        (isJust (stripPrefix a b))
-        "isJust (stripPrefix a b)"
+
+leftReductiveLaw_stripPrefix_Just
+    :: (Eq a, LeftReductive a) => a -> a -> Property
+leftReductiveLaw_stripPrefix_Just a b =
+    isJust (stripPrefix a (a <> b))
+        ==> leftReductiveLaw_stripPrefix a (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+leftReductiveLaw_stripPrefix_Nothing
+    :: (Eq a, LeftReductive a) => a -> a -> Property
+leftReductiveLaw_stripPrefix_Nothing a b =
+    isNothing (stripPrefix a b)
+        ==> leftReductiveLaw_stripPrefix a b
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- RightReductive
@@ -130,46 +150,59 @@ rightReductiveLaws
 rightReductiveLaws _ = Laws "RightReductive"
     [ makeLaw "isSuffix"
         $ rightReductiveLaw_isSuffix @a
-    , makeLaw "isSuffix stripSuffix"
-        $ rightReductiveLaw_isSuffix_stripSuffix @a
-    , makeLaw "stripSuffix"
-        $ rightReductiveLaw_stripSuffix @a
+    , makeLaw "isSuffix stripSuffix True"
+        $ rightReductiveLaw_isSuffix_stripSuffix_True @a
+    , makeLaw "isSuffix stripSuffix False"
+        $ rightReductiveLaw_isSuffix_stripSuffix_False @a
+    , makeLaw "stripSuffix Just"
+        $ rightReductiveLaw_stripSuffix_Just @a
+    , makeLaw "stripSuffix_Nothing"
+        $ rightReductiveLaw_stripSuffix_Nothing @a
     ]
 
 rightReductiveLaw_isSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_isSuffix a b =
     b `isSuffixOf` (a <> b)
-    & cover 5 (a == b) "a == b"
-    & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_isSuffix_stripSuffix
-    :: RightReductive a => a -> a -> Property
-rightReductiveLaw_isSuffix_stripSuffix a b =
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_isSuffix_stripSuffix a b = property $
     isSuffixOf a b == isJust (stripSuffix a b)
-    & cover 5
-        (a `isSuffixOf` b)
-        "a `isSuffixOf` b"
-    & cover 5
-        (not (a `isSuffixOf` b))
-        "not (a `isSuffixOf` b)"
-    & cover 5
-        (isJust (stripSuffix a b))
-        "isJust (stripSuffix a b)"
-    & cover 5
-        (isNothing (stripSuffix a b))
-        "isNothing (stripSuffix a b)"
+
+rightReductiveLaw_isSuffix_stripSuffix_True
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_isSuffix_stripSuffix_True a b =
+    b `isSuffixOf` (a <> b)
+        ==> rightReductiveLaw_isSuffix_stripSuffix b (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+rightReductiveLaw_isSuffix_stripSuffix_False
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_isSuffix_stripSuffix_False a b =
+    not (a `isSuffixOf` b)
+        ==> rightReductiveLaw_isSuffix_stripSuffix a b
+    & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_stripSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_stripSuffix a b =
+rightReductiveLaw_stripSuffix a b = property $
     maybe b (<> a) (stripSuffix a b) == b
-    & cover 5
-        (isNothing (stripSuffix a b))
-        "isNothing (stripSuffix a b)"
-    & cover 5
-        (isJust (stripSuffix a b))
-        "isJust (stripSuffix a b)"
+
+rightReductiveLaw_stripSuffix_Just
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_stripSuffix_Just a b =
+    isJust (stripSuffix b (a <> b))
+        ==> rightReductiveLaw_stripSuffix a (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+rightReductiveLaw_stripSuffix_Nothing
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_stripSuffix_Nothing a b =
+    isNothing (stripSuffix a b)
+        ==> rightReductiveLaw_stripSuffix a b
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- Reductive
@@ -180,71 +213,99 @@ reductiveLaws
     => Proxy a
     -> Laws
 reductiveLaws _ = Laws "Reductive"
-    [ makeLaw "Equivalence (prefix)"
-        $ reductiveLaw_equivalence_prefix @a
-    , makeLaw "Equivalence (suffix)"
-        $ reductiveLaw_equivalence_suffix @a
-    , makeLaw "Inversion (prefix)"
-        $ reductiveLaw_inversion_prefix @a
-    , makeLaw "Inversion (suffix)"
-        $ reductiveLaw_inversion_suffix @a
+    [ makeLaw "Equivalence (prefix) (True)"
+        $ reductiveLaw_equivalence_prefix_True @a
+    , makeLaw "Equivalence (prefix) (False)"
+        $ reductiveLaw_equivalence_prefix_False @a
+    , makeLaw "Equivalence (suffix) (True)"
+        $ reductiveLaw_equivalence_suffix_True @a
+    , makeLaw "Equivalence (suffix) (False)"
+        $ reductiveLaw_equivalence_suffix_False @a
+    , makeLaw "Inversion (prefix) (Just)"
+        $ reductiveLaw_inversion_prefix_Just @a
+    , makeLaw "Inversion (prefix) (Nothing)"
+        $ reductiveLaw_inversion_prefix_Nothing @a
+    , makeLaw "Inversion (suffix) (Just)"
+        $ reductiveLaw_inversion_suffix_Just @a
+    , makeLaw "Inversion (suffix) (Nothing)"
+        $ reductiveLaw_inversion_suffix_Nothing @a
     ]
 
 reductiveLaw_equivalence_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_prefix a b =
+reductiveLaw_equivalence_prefix a b = property $
     a </> b == stripPrefix b a
-    & cover 5
-        (isJust (a </> b))
-        "isJust (a </> b)"
-    & cover 5
-        (isNothing (a </> b))
-        "isNothing (a </> b)"
-    & cover 5
-        (isJust (stripPrefix b a))
-        "isJust (stripPrefix b a)"
-    & cover 5
-        (isNothing (stripPrefix b a))
-        "isNothing (stripPrefix b a)"
+
+reductiveLaw_equivalence_prefix_True
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_equivalence_prefix_True a b =
+    a `isPrefixOf` (a <> b)
+        ==> reductiveLaw_equivalence_prefix a (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+reductiveLaw_equivalence_prefix_False
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_equivalence_prefix_False a b =
+    not (a `isPrefixOf` b)
+        ==> reductiveLaw_equivalence_prefix a b
+    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_equivalence_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_suffix a b =
+reductiveLaw_equivalence_suffix a b = property $
     a </> b == stripSuffix b a
-    & cover 5
-        (isJust (a </> b))
-        "isJust (a </> b)"
-    & cover 5
-        (isNothing (a </> b))
-        "isNothing (a </> b)"
-    & cover 5
-        (isJust (stripSuffix b a))
-        "isJust (stripSuffix b a)"
-    & cover 5
-        (isNothing (stripSuffix b a))
-        "isNothing (stripSuffix b a)"
+
+reductiveLaw_equivalence_suffix_True
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_equivalence_suffix_True a b =
+    b `isSuffixOf` (a <> b)
+        ==> reductiveLaw_equivalence_suffix b (a <> b)
+    & cover 50 (a /= b) "a /= b"
+
+reductiveLaw_equivalence_suffix_False
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_equivalence_suffix_False a b =
+    not (a `isSuffixOf` b)
+        ==> reductiveLaw_equivalence_suffix a b
+    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_prefix a b =
+reductiveLaw_inversion_prefix a b = property $
     maybe a (b <>) (a </> b) == a
-    & cover 5
-        (isJust (a </> b))
-        "isJust (a </> b)"
-    & cover 5
-        (isNothing (a </> b))
-        "isNothing (a </> b)"
+
+reductiveLaw_inversion_prefix_Just
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_inversion_prefix_Just a b =
+    isJust ((a <> b) </> a)
+        ==> reductiveLaw_inversion_prefix (a <> b) a
+    & cover 50 (a /= b) "a /= b"
+
+reductiveLaw_inversion_prefix_Nothing
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_inversion_prefix_Nothing a b =
+    isNothing (a </> b)
+        ==> reductiveLaw_inversion_prefix a b
+    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_suffix a b =
+reductiveLaw_inversion_suffix a b = property $
     maybe a (<> b) (a </> b) == a
-    & cover 5
-        (isJust (a </> b))
-        "isJust (a </> b)"
-    & cover 5
-        (isNothing (a </> b))
-        "isNothing (a </> b)"
+
+reductiveLaw_inversion_suffix_Just
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_inversion_suffix_Just a b =
+    isJust ((a <> b) </> a)
+        ==> reductiveLaw_inversion_suffix (a <> b) a
+    & cover 50 (a /= b) "a /= b"
+
+reductiveLaw_inversion_suffix_Nothing
+    :: (Eq a, Reductive a) => a -> a -> Property
+reductiveLaw_inversion_suffix_Nothing a b =
+    isNothing (a </> b)
+        ==> reductiveLaw_inversion_suffix a b
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- LeftCancellative
@@ -261,10 +322,9 @@ leftCancellativeLaws _ = Laws "LeftCancellative"
 
 leftCancellativeLaw_cancellation
     :: (Eq a, LeftCancellative a) => a -> a -> Property
-leftCancellativeLaw_cancellation a b =
+leftCancellativeLaw_cancellation a b = property $
     stripPrefix a (a <> b) == Just b
-        & cover 5 (a == b) "a == b"
-        & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- RightCancellative
@@ -281,10 +341,9 @@ rightCancellativeLaws _ = Laws "RightCancellative"
 
 rightCancellativeLaw_cancellation
     :: (Eq a, RightCancellative a) => a -> a -> Property
-rightCancellativeLaw_cancellation a b =
+rightCancellativeLaw_cancellation a b = property $
     stripSuffix b (a <> b) == Just a
-        & cover 5 (a == b) "a == b"
-        & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- Cancellative
@@ -303,17 +362,15 @@ cancellativeLaws _ = Laws "Cancellative"
 
 cancellativeLaw_cancellation_prefix
     :: (Eq a, Cancellative a) => a -> a -> Property
-cancellativeLaw_cancellation_prefix a b =
+cancellativeLaw_cancellation_prefix a b = property $
     (a <> b) </> a == Just b
-        & cover 5 (a == b) "a == b"
-        & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 cancellativeLaw_cancellation_suffix
     :: (Eq a, Cancellative a) => a -> a -> Property
 cancellativeLaw_cancellation_suffix a b =
     (a <> b) </> b == Just a
-        & cover 5 (a == b) "a == b"
-        & cover 5 (a /= b) "a /= b"
+    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- MonoidNull
@@ -332,8 +389,8 @@ monoidNullLaw_basic
     :: (Eq a, MonoidNull a) => a -> Property
 monoidNullLaw_basic a =
     null a == (a == mempty)
-        & cover 5 (a == mempty) "a == mempty"
-        & cover 5 (a /= mempty) "a /= mempty"
+        & cover 5  (a == mempty) "a == mempty"
+        & cover 50 (a /= mempty) "a /= mempty"
 
 --------------------------------------------------------------------------------
 -- Utilities
