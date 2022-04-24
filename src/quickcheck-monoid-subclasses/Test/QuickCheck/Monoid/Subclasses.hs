@@ -353,14 +353,14 @@ makeLaw1
     => String
     -> (a -> Property)
     -> (String, Property)
-makeLaw1 s p = makeLaw s $ makeProperty1 p
+makeLaw1 s = makeLaw s . makeProperty1
 
 makeLaw2
     :: (Arbitrary a, Show a, Eq a, Testable t)
     => String
     -> (a -> a -> t)
     -> (String, Property)
-makeLaw2 s p = makeLaw s $ makeProperty2 p
+makeLaw2 s = makeLaw s . makeProperty2
 
 makeProperty1 :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
 makeProperty1 p a
