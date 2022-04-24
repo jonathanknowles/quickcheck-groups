@@ -9,10 +9,14 @@
 --
 module Test.QuickCheck.Monoid.SubclassesSpec where
 
+import Data.ByteString.Lazy
+    ( ByteString )
 import Data.Monoid
     ( Sum (..) )
 import Data.Set
     ( Set )
+import Data.Text
+    ( Text )
 import Numeric.Natural
     ( Natural )
 import Test.Hspec
@@ -21,6 +25,10 @@ import Test.QuickCheck
     ( Arbitrary (..), arbitrarySizedNatural, shrinkIntegral )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
+import Test.QuickCheck.Instances.ByteString
+    ()
+import Test.QuickCheck.Instances.Text
+    ()
 import Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
@@ -37,6 +45,22 @@ spec :: Spec
 spec = do
 
     parallel $ describe "Lawfulness of type class instances" $ do
+        testLawsMany @ByteString
+            [ leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
+            ]
+        testLawsMany @Text
+            [ leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
+            ]
         testLawsMany @[Int]
             [ leftCancellativeLaws
             , leftReductiveLaws
