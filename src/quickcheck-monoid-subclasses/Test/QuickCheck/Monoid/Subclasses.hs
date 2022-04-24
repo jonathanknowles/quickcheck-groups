@@ -12,14 +12,14 @@
 -- Please note that this module is experimental.
 --
 module Test.QuickCheck.Monoid.Subclasses
-    ( commutativeLaws
-    , leftReductiveLaws
-    , rightReductiveLaws
-    , reductiveLaws
+    ( cancellativeLaws
+    , commutativeLaws
     , leftCancellativeLaws
-    , rightCancellativeLaws
-    , cancellativeLaws
+    , leftReductiveLaws
     , monoidNullLaws
+    , reductiveLaws
+    , rightCancellativeLaws
+    , rightReductiveLaws
     )
     where
 
@@ -65,14 +65,13 @@ commutativeLaws
     -> Laws
 commutativeLaws _ = Laws "Commutative"
     [ makeLaw "Basic"
-        $ commutativeLaw_basic @a
+        $ makeProperty2 $ commutativeLaw_basic @a
     ]
 
 commutativeLaw_basic
     :: (Eq a, Commutative a) => a -> a -> Property
-commutativeLaw_basic a b =
+commutativeLaw_basic a b = property $
     a <> b == b <> a
-    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- LeftReductive
@@ -84,28 +83,26 @@ leftReductiveLaws
     -> Laws
 leftReductiveLaws _ = Laws "LeftReductive"
     [ makeLaw "isPrefix"
-        $ leftReductiveLaw_isPrefix @a
+        $ makeProperty2 $ leftReductiveLaw_isPrefix @a
     , makeLaw "isPrefix stripPrefix"
-        $ leftReductiveLaw_isPrefix_stripPrefix @a
+        $ makeProperty2 $ leftReductiveLaw_isPrefix_stripPrefix @a
     , makeLaw "isPrefix stripPrefix (Just)"
-        $ leftReductiveLaw_isPrefix_stripPrefix_Just @a
+        $ makeProperty2 $ leftReductiveLaw_isPrefix_stripPrefix_Just @a
     , makeLaw "stripPrefix"
-        $ leftReductiveLaw_stripPrefix @a
+        $ makeProperty2 $ leftReductiveLaw_stripPrefix @a
     , makeLaw "stripPrefix (Just)"
-        $ leftReductiveLaw_stripPrefix_Just @a
+        $ makeProperty2 $ leftReductiveLaw_stripPrefix_Just @a
     ]
 
 leftReductiveLaw_isPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_isPrefix a b =
+leftReductiveLaw_isPrefix a b = property $
     a `isPrefixOf` (a <> b)
-    & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_isPrefix_stripPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_isPrefix_stripPrefix a b = property $
     isPrefixOf a b == isJust (stripPrefix a b)
-    & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_isPrefix_stripPrefix_Just
     :: (Eq a, LeftReductive a) => a -> a -> Property
@@ -117,7 +114,6 @@ leftReductiveLaw_stripPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_stripPrefix a b = property $
     maybe b (a <>) (stripPrefix a b) == b
-    & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_stripPrefix_Just
     :: (Eq a, LeftReductive a) => a -> a -> Property
@@ -135,46 +131,43 @@ rightReductiveLaws
     -> Laws
 rightReductiveLaws _ = Laws "RightReductive"
     [ makeLaw "isSuffix"
-        $ rightReductiveLaw_isSuffix @a
+        $ makeProperty2 $ rightReductiveLaw_isSuffix @a
     , makeLaw "isSuffix stripSuffix"
-        $ rightReductiveLaw_isSuffix_stripSuffix @a
+        $ makeProperty2 $ rightReductiveLaw_isSuffix_stripSuffix @a
     , makeLaw "isSuffix stripSuffix (Just)"
-        $ rightReductiveLaw_isSuffix_stripSuffix_Just @a
+        $ makeProperty2 $ rightReductiveLaw_isSuffix_stripSuffix_Just @a
     , makeLaw "stripSuffix"
-        $ rightReductiveLaw_stripSuffix @a
+        $ makeProperty2 $ rightReductiveLaw_stripSuffix @a
     , makeLaw "stripSuffix (Just)"
-        $ rightReductiveLaw_stripSuffix_Just @a
+        $ makeProperty2 $ rightReductiveLaw_stripSuffix_Just @a
     ]
 
 rightReductiveLaw_isSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix a b =
+rightReductiveLaw_isSuffix a b = property $
     b `isSuffixOf` (a <> b)
-    & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_isSuffix_stripSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_isSuffix_stripSuffix a b = property $
     isSuffixOf a b == isJust (stripSuffix a b)
-    & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_isSuffix_stripSuffix_Just
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_isSuffix_stripSuffix_Just a b =
     isJust (stripSuffix b (a <> b))
-        ==> rightReductiveLaw_isSuffix_stripSuffix b (a <> b)
+    ==> rightReductiveLaw_isSuffix_stripSuffix b (a <> b)
 
 rightReductiveLaw_stripSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_stripSuffix a b = property $
     maybe b (<> a) (stripSuffix a b) == b
-    & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_stripSuffix_Just
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_stripSuffix_Just a b =
     isJust (stripSuffix b (a <> b))
-        ==> rightReductiveLaw_stripSuffix a (a <> b)
+    ==> rightReductiveLaw_stripSuffix a (a <> b)
 
 --------------------------------------------------------------------------------
 -- Reductive
@@ -186,70 +179,66 @@ reductiveLaws
     -> Laws
 reductiveLaws _ = Laws "Reductive"
     [ makeLaw "Equivalence (prefix)"
-        $ reductiveLaw_equivalence_prefix @a
+        $ makeProperty2 $ reductiveLaw_equivalence_prefix @a
     , makeLaw "Equivalence (prefix) (Just)"
-        $ reductiveLaw_equivalence_prefix_Just @a
+        $ makeProperty2 $ reductiveLaw_equivalence_prefix_Just @a
     , makeLaw "Equivalence (suffix)"
-        $ reductiveLaw_equivalence_suffix @a
+        $ makeProperty2 $ reductiveLaw_equivalence_suffix @a
     , makeLaw "Equivalence (suffix) (Just)"
-        $ reductiveLaw_equivalence_suffix_Just @a
+        $ makeProperty2 $ reductiveLaw_equivalence_suffix_Just @a
     , makeLaw "Inversion (prefix)"
-        $ reductiveLaw_inversion_prefix @a
+        $ makeProperty2 $ reductiveLaw_inversion_prefix @a
     , makeLaw "Inversion (prefix) (Just)"
-        $ reductiveLaw_inversion_prefix_Just @a
+        $ makeProperty2 $ reductiveLaw_inversion_prefix_Just @a
     , makeLaw "Inversion (suffix)"
-        $ reductiveLaw_inversion_suffix @a
+        $ makeProperty2 $ reductiveLaw_inversion_suffix @a
     , makeLaw "Inversion (suffix) (Just)"
-        $ reductiveLaw_inversion_suffix_Just @a
+        $ makeProperty2 $ reductiveLaw_inversion_suffix_Just @a
     ]
 
 reductiveLaw_equivalence_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_prefix a b = property $
     a </> b == stripPrefix b a
-    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_equivalence_prefix_Just
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_prefix_Just a b =
     isJust (stripPrefix a (a <> b))
-        ==> reductiveLaw_equivalence_prefix a (a <> b)
+    ==> reductiveLaw_equivalence_prefix a (a <> b)
 
 reductiveLaw_equivalence_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_suffix a b = property $
     a </> b == stripSuffix b a
-    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_equivalence_suffix_Just
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_suffix_Just a b =
     isJust (stripSuffix b (a <> b))
-        ==> reductiveLaw_equivalence_suffix b (a <> b)
+    ==> reductiveLaw_equivalence_suffix b (a <> b)
 
 reductiveLaw_inversion_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_prefix a b = property $
     maybe a (b <>) (a </> b) == a
-    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_prefix_Just
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_prefix_Just a b =
     isJust ((a <> b) </> a)
-        ==> reductiveLaw_inversion_prefix (a <> b) a
+    ==> reductiveLaw_inversion_prefix (a <> b) a
 
 reductiveLaw_inversion_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_suffix a b = property $
     maybe a (<> b) (a </> b) == a
-    & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_suffix_Just
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_suffix_Just a b =
     isJust ((a <> b) </> a)
-        ==> reductiveLaw_inversion_suffix (a <> b) a
+    ==> reductiveLaw_inversion_suffix (a <> b) a
 
 --------------------------------------------------------------------------------
 -- LeftCancellative
@@ -261,14 +250,13 @@ leftCancellativeLaws
     -> Laws
 leftCancellativeLaws _ = Laws "LeftCancellative"
     [ makeLaw "Cancellation"
-        $ leftCancellativeLaw_cancellation @a
+        $ makeProperty2 $ leftCancellativeLaw_cancellation @a
     ]
 
 leftCancellativeLaw_cancellation
     :: (Eq a, LeftCancellative a) => a -> a -> Property
 leftCancellativeLaw_cancellation a b = property $
     stripPrefix a (a <> b) == Just b
-    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- RightCancellative
@@ -280,14 +268,13 @@ rightCancellativeLaws
     -> Laws
 rightCancellativeLaws _ = Laws "RightCancellative"
     [ makeLaw "Cancellation"
-        $ rightCancellativeLaw_cancellation @a
+        $ makeProperty2 $ rightCancellativeLaw_cancellation @a
     ]
 
 rightCancellativeLaw_cancellation
     :: (Eq a, RightCancellative a) => a -> a -> Property
 rightCancellativeLaw_cancellation a b = property $
     stripSuffix b (a <> b) == Just a
-    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- Cancellative
@@ -299,22 +286,20 @@ cancellativeLaws
     -> Laws
 cancellativeLaws _ = Laws "Cancellative"
     [ makeLaw "Cancellation (prefix)"
-        $ cancellativeLaw_cancellation_prefix @a
+        $ makeProperty2 $ cancellativeLaw_cancellation_prefix @a
     , makeLaw "Cancellation (suffix)"
-        $ cancellativeLaw_cancellation_suffix @a
+        $ makeProperty2 $ cancellativeLaw_cancellation_suffix @a
     ]
 
 cancellativeLaw_cancellation_prefix
     :: (Eq a, Cancellative a) => a -> a -> Property
 cancellativeLaw_cancellation_prefix a b = property $
     (a <> b) </> a == Just b
-    & cover 50 (a /= b) "a /= b"
 
 cancellativeLaw_cancellation_suffix
     :: (Eq a, Cancellative a) => a -> a -> Property
-cancellativeLaw_cancellation_suffix a b =
+cancellativeLaw_cancellation_suffix a b = property $
     (a <> b) </> b == Just a
-    & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
 -- MonoidNull
@@ -326,19 +311,28 @@ monoidNullLaws
     -> Laws
 monoidNullLaws _ = Laws "MonoidNull"
     [ makeLaw "Basic"
-        $ monoidNullLaw_basic @a
+        $ makeProperty1 $ monoidNullLaw_basic @a
     ]
 
 monoidNullLaw_basic
     :: (Eq a, MonoidNull a) => a -> Property
-monoidNullLaw_basic a =
+monoidNullLaw_basic a = property $
     null a == (a == mempty)
-        & cover  1 (a == mempty) "a == mempty"
-        & cover 50 (a /= mempty) "a /= mempty"
 
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
 
 makeLaw :: Testable t => String -> t -> (String, Property)
-makeLaw title p = (title, checkCoverage $ property p)
+makeLaw title t = (title, checkCoverage $ property t)
+
+makeProperty1 :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
+makeProperty1 p a
+    = cover  1 (a == mempty) "a == mempty"
+    $ cover 50 (a /= mempty) "a /= mempty"
+    $ property $ p a
+
+makeProperty2 :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
+makeProperty2 p a b
+    = cover 50 (a /= b) "a /= b"
+    $ property $ p a b

@@ -13,16 +13,13 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Set
     ( Set )
-import Data.Word
-    ( Word8 )
 import Test.Hspec
     ( Spec, describe, parallel )
-import Test.QuickCheck
-    ( Arbitrary (..), Gen, NonNegative (..), oneof, suchThat )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Monoid.Subclasses
-    ( commutativeLaws
+    ( cancellativeLaws
+    , commutativeLaws
     , leftCancellativeLaws
     , leftReductiveLaws
     , monoidNullLaws
@@ -31,30 +28,31 @@ import Test.QuickCheck.Monoid.Subclasses
     , reductiveLaws
     )
 
-import qualified Data.Set as Set
-
 spec :: Spec
 spec = do
 
     parallel $ describe "Lawfulness of type class instances" $ do
         testLawsMany @[Int]
-            [ leftReductiveLaws
-            , rightReductiveLaws
-            , leftCancellativeLaws
-            , rightCancellativeLaws
+            [ leftCancellativeLaws
+            , leftReductiveLaws
             , monoidNullLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
             ]
         testLawsMany @(Set Int)
             [ commutativeLaws
             , leftReductiveLaws
-            , rightReductiveLaws
-            , reductiveLaws
             , monoidNullLaws
+            , reductiveLaws
+            , rightReductiveLaws
             ]
         testLawsMany @(Sum Int)
-            [ commutativeLaws
+            [ cancellativeLaws
+            , commutativeLaws
+            , leftCancellativeLaws
             , leftReductiveLaws
-            , rightReductiveLaws
-            , reductiveLaws
             , monoidNullLaws
+            , reductiveLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
             ]
