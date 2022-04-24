@@ -187,28 +187,28 @@ reductiveLaws
     => Proxy a
     -> Laws
 reductiveLaws _ = Laws "Reductive"
-    [ makeLaw2 @a
+    [ makeLaw2
         "reductiveLaw_equivalence_prefix"
         (reductiveLaw_equivalence_prefix @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_equivalence_prefix_Just"
         (reductiveLaw_equivalence_prefix_Just @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_equivalence_suffix"
         (reductiveLaw_equivalence_suffix @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_equivalence_suffix_Just"
         (reductiveLaw_equivalence_suffix_Just @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_inversion_prefix"
         (reductiveLaw_inversion_prefix @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_inversion_prefix_Just"
         (reductiveLaw_inversion_prefix_Just @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_inversion_suffix"
         (reductiveLaw_inversion_suffix @a)
-    , makeLaw2 @a
+    , makeLaw2
         "reductiveLaw_inversion_suffix_Just"
         (reductiveLaw_inversion_suffix_Just @a)
     ]
@@ -266,7 +266,7 @@ leftCancellativeLaws
     => Proxy a
     -> Laws
 leftCancellativeLaws _ = Laws "LeftCancellative"
-    [ makeLaw2 @a
+    [ makeLaw2
         "leftCancellativeLaw_cancellation"
         (leftCancellativeLaw_cancellation @a)
     ]
@@ -285,7 +285,7 @@ rightCancellativeLaws
     => Proxy a
     -> Laws
 rightCancellativeLaws _ = Laws "RightCancellative"
-    [ makeLaw2 @a
+    [ makeLaw2
         "rightCancellativeLaw_cancellation"
         (rightCancellativeLaw_cancellation @a)
     ]
@@ -304,10 +304,10 @@ cancellativeLaws
     => Proxy a
     -> Laws
 cancellativeLaws _ = Laws "Cancellative"
-    [ makeLaw2 @a
+    [ makeLaw2
         "cancellativeLaw_cancellation_prefix"
         (cancellativeLaw_cancellation_prefix @a)
-    , makeLaw2 @a
+    , makeLaw2
         "cancellativeLaw_cancellation_suffix"
         (cancellativeLaw_cancellation_suffix @a)
     ]
@@ -331,7 +331,7 @@ monoidNullLaws
     => Proxy a
     -> Laws
 monoidNullLaws _ = Laws "MonoidNull"
-    [ makeLaw1 @a
+    [ makeLaw1
         "monoidNullLaw_basic"
         (monoidNullLaw_basic @a)
     ]
