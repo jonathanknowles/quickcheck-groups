@@ -62,8 +62,9 @@ commutativeLaws
     => Proxy a
     -> Laws
 commutativeLaws _ = Laws "Commutative"
-    [ makeLaw2 @a "Basic"
-        commutativeLaw_basic
+    [ makeLaw2
+        "commutativeLaw_basic"
+        (commutativeLaw_basic @a)
     ]
 
 commutativeLaw_basic
@@ -80,16 +81,21 @@ leftReductiveLaws
     => Proxy a
     -> Laws
 leftReductiveLaws _ = Laws "LeftReductive"
-    [ makeLaw2 @a "isPrefix"
-        leftReductiveLaw_isPrefix
-    , makeLaw2 @a "isPrefix stripPrefix"
-        leftReductiveLaw_isPrefix_stripPrefix
-    , makeLaw2 @a "isPrefix stripPrefix (Just)"
-        leftReductiveLaw_isPrefix_stripPrefix_Just
-    , makeLaw2 @a "stripPrefix"
-        leftReductiveLaw_stripPrefix
-    , makeLaw2 @a "stripPrefix (Just)"
-        leftReductiveLaw_stripPrefix_Just
+    [ makeLaw2
+        "leftReductiveLaw_isPrefix"
+        (leftReductiveLaw_isPrefix @a)
+    , makeLaw2
+        "leftReductiveLaw_isPrefix_stripPrefix"
+        (leftReductiveLaw_isPrefix_stripPrefix @a)
+    , makeLaw2
+        "leftReductiveLaw_isPrefix_stripPrefix_Just"
+        (leftReductiveLaw_isPrefix_stripPrefix_Just @a)
+    , makeLaw2
+        "leftReductiveLaw_stripPrefix"
+        (leftReductiveLaw_stripPrefix @a)
+    , makeLaw2
+        "leftReductiveLaw_stripPrefix_Just"
+        (leftReductiveLaw_stripPrefix_Just @a)
     ]
 
 leftReductiveLaw_isPrefix
@@ -128,16 +134,21 @@ rightReductiveLaws
     => Proxy a
     -> Laws
 rightReductiveLaws _ = Laws "RightReductive"
-    [ makeLaw2 @a "isSuffix"
-        rightReductiveLaw_isSuffix
-    , makeLaw2 @a "isSuffix stripSuffix"
-        rightReductiveLaw_isSuffix_stripSuffix
-    , makeLaw2 @a "isSuffix stripSuffix (Just)"
-        rightReductiveLaw_isSuffix_stripSuffix_Just
-    , makeLaw2 @a "stripSuffix"
-        rightReductiveLaw_stripSuffix
-    , makeLaw2 @a "stripSuffix (Just)"
-        rightReductiveLaw_stripSuffix_Just
+    [ makeLaw2
+        "rightReductiveLaw_isSuffix"
+        (rightReductiveLaw_isSuffix @a)
+    , makeLaw2
+        "rightReductiveLaw_isSuffix_stripSuffix"
+        (rightReductiveLaw_isSuffix_stripSuffix @a)
+    , makeLaw2
+        "rightReductiveLaw_isSuffix_stripSuffix_Just"
+        (rightReductiveLaw_isSuffix_stripSuffix_Just @a)
+    , makeLaw2
+        "rightReductiveLaw_stripSuffix"
+        (rightReductiveLaw_stripSuffix @a)
+    , makeLaw2
+        "rightReductiveLaw_stripSuffix_Just"
+        (rightReductiveLaw_stripSuffix_Just @a)
     ]
 
 rightReductiveLaw_isSuffix
@@ -176,22 +187,30 @@ reductiveLaws
     => Proxy a
     -> Laws
 reductiveLaws _ = Laws "Reductive"
-    [ makeLaw2 @a "Equivalence (prefix)"
-        reductiveLaw_equivalence_prefix
-    , makeLaw2 @a "Equivalence (prefix) (Just)"
-        reductiveLaw_equivalence_prefix_Just
-    , makeLaw2 @a "Equivalence (suffix)"
-        reductiveLaw_equivalence_suffix
-    , makeLaw2 @a "Equivalence (suffix) (Just)"
-        reductiveLaw_equivalence_suffix_Just
-    , makeLaw2 @a "Inversion (prefix)"
-        reductiveLaw_inversion_prefix
-    , makeLaw2 @a "Inversion (prefix) (Just)"
-        reductiveLaw_inversion_prefix_Just
-    , makeLaw2 @a "Inversion (suffix)"
-        reductiveLaw_inversion_suffix
-    , makeLaw2 @a "Inversion (suffix) (Just)"
-        reductiveLaw_inversion_suffix_Just
+    [ makeLaw2 @a
+        "reductiveLaw_equivalence_prefix"
+        (reductiveLaw_equivalence_prefix @a)
+    , makeLaw2 @a
+        "reductiveLaw_equivalence_prefix_Just"
+        (reductiveLaw_equivalence_prefix_Just @a)
+    , makeLaw2 @a
+        "reductiveLaw_equivalence_suffix"
+        (reductiveLaw_equivalence_suffix @a)
+    , makeLaw2 @a
+        "reductiveLaw_equivalence_suffix_Just"
+        (reductiveLaw_equivalence_suffix_Just @a)
+    , makeLaw2 @a
+        "reductiveLaw_inversion_prefix"
+        (reductiveLaw_inversion_prefix @a)
+    , makeLaw2 @a
+        "reductiveLaw_inversion_prefix_Just"
+        (reductiveLaw_inversion_prefix_Just @a)
+    , makeLaw2 @a
+        "reductiveLaw_inversion_suffix"
+        (reductiveLaw_inversion_suffix @a)
+    , makeLaw2 @a
+        "reductiveLaw_inversion_suffix_Just"
+        (reductiveLaw_inversion_suffix_Just @a)
     ]
 
 reductiveLaw_equivalence_prefix
@@ -247,8 +266,9 @@ leftCancellativeLaws
     => Proxy a
     -> Laws
 leftCancellativeLaws _ = Laws "LeftCancellative"
-    [ makeLaw2 @a "Cancellation"
-        leftCancellativeLaw_cancellation
+    [ makeLaw2 @a
+        "leftCancellativeLaw_cancellation"
+        (leftCancellativeLaw_cancellation @a)
     ]
 
 leftCancellativeLaw_cancellation
@@ -265,8 +285,9 @@ rightCancellativeLaws
     => Proxy a
     -> Laws
 rightCancellativeLaws _ = Laws "RightCancellative"
-    [ makeLaw2 @a "Cancellation"
-        rightCancellativeLaw_cancellation
+    [ makeLaw2 @a
+        "rightCancellativeLaw_cancellation"
+        (rightCancellativeLaw_cancellation @a)
     ]
 
 rightCancellativeLaw_cancellation
@@ -283,10 +304,12 @@ cancellativeLaws
     => Proxy a
     -> Laws
 cancellativeLaws _ = Laws "Cancellative"
-    [ makeLaw2 @a "Cancellation (prefix)"
-        cancellativeLaw_cancellation_prefix
-    , makeLaw2 @a "Cancellation (suffix)"
-        cancellativeLaw_cancellation_suffix
+    [ makeLaw2 @a
+        "cancellativeLaw_cancellation_prefix"
+        (cancellativeLaw_cancellation_prefix @a)
+    , makeLaw2 @a
+        "cancellativeLaw_cancellation_suffix"
+        (cancellativeLaw_cancellation_suffix @a)
     ]
 
 cancellativeLaw_cancellation_prefix
@@ -308,8 +331,9 @@ monoidNullLaws
     => Proxy a
     -> Laws
 monoidNullLaws _ = Laws "MonoidNull"
-    [ makeLaw1 @a "Basic"
-        monoidNullLaw_basic
+    [ makeLaw1 @a
+        "monoidNullLaw_basic"
+        (monoidNullLaw_basic @a)
     ]
 
 monoidNullLaw_basic
