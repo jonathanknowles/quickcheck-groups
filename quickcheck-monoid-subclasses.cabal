@@ -31,3 +31,21 @@ library
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
+
+test-suite quickcheck-monoid-subclasses-test
+    main-is:
+        Spec.hs
+    hs-source-dirs:
+        src/quickcheck-monoid-subclasses-test
+    other-modules:
+        Test.QuickCheck.Classes.Hspec
+    type: exitcode-stdio-1.0
+    default-language:
+        Haskell2010
+    build-tool-depends:
+        hspec-discover:hspec-discover ==2.*
+    build-depends:
+        base >=4.7 && <5
+      , hspec
+      , QuickCheck
+      , quickcheck-classes
