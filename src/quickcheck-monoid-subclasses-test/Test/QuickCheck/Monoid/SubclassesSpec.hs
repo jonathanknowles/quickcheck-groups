@@ -13,8 +13,12 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Set
     ( Set )
+import Numeric.Natural
+    ( Natural )
 import Test.Hspec
     ( Spec, describe, parallel )
+import Test.QuickCheck
+    ( Arbitrary (..), arbitrarySizedNatural, shrinkIntegral )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Monoid.Subclasses
@@ -23,6 +27,7 @@ import Test.QuickCheck.Monoid.Subclasses
     , leftCancellativeLaws
     , leftReductiveLaws
     , monoidNullLaws
+    , overlappingGCDMonoidLaws
     , rightCancellativeLaws
     , rightReductiveLaws
     , reductiveLaws
@@ -36,6 +41,7 @@ spec = do
             [ leftCancellativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , overlappingGCDMonoidLaws
             , rightCancellativeLaws
             , rightReductiveLaws
             ]
@@ -43,6 +49,15 @@ spec = do
             [ commutativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , reductiveLaws
+            , rightReductiveLaws
+            ]
+        testLawsMany @(Set Natural)
+            [ commutativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightReductiveLaws
             ]
@@ -56,3 +71,18 @@ spec = do
             , rightCancellativeLaws
             , rightReductiveLaws
             ]
+        testLawsMany @(Sum Natural)
+            [ cancellativeLaws
+            , commutativeLaws
+            , leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , reductiveLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
+            ]
+
+instance Arbitrary Natural where
+    arbitrary = arbitrarySizedNatural
+    shrink = shrinkIntegral

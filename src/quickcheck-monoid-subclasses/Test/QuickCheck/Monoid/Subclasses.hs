@@ -18,6 +18,7 @@ module Test.QuickCheck.Monoid.Subclasses
     , leftCancellativeLaws
     , leftReductiveLaws
     , monoidNullLaws
+    , overlappingGCDMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
     , rightReductiveLaws
@@ -29,6 +30,8 @@ import Prelude hiding
 
 import Data.Maybe
     ( isJust )
+import Data.Monoid.Cancellative
+    ( OverlappingGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull (..) )
 import Data.Proxy
@@ -53,6 +56,9 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
+
+-- TODO:
+-- Add other mconcat laws that stimulate the production of Nothing.
 
 --------------------------------------------------------------------------------
 -- Commutative
@@ -322,6 +328,45 @@ cancellativeLaw_cancellation_suffix
     :: (Eq a, Cancellative a) => a -> a -> Property
 cancellativeLaw_cancellation_suffix a b = property $
     (a <> b) </> b == Just a
+
+--------------------------------------------------------------------------------
+-- OverlappingGCDMonoid
+--------------------------------------------------------------------------------
+
+overlappingGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, OverlappingGCDMonoid a)
+    => Proxy a
+    -> Laws
+overlappingGCDMonoidLaws _ = Laws "OverlappingGCDMonoid"
+    [ makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap"
+        (overlappingGCDMonoidLaw_stripOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripPrefixOverlap"
+        (overlappingGCDMonoidLaw_stripPrefixOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripSuffixOverlap"
+        (overlappingGCDMonoidLaw_stripSuffixOverlap)
+    ]
+
+overlappingGCDMonoidLaw_stripOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap a b = property $
+    stripOverlap a b ==
+        ( stripSuffixOverlap b a
+        , overlap a b
+        , stripPrefixOverlap a b
+        )
+
+overlappingGCDMonoidLaw_stripPrefixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripPrefixOverlap a b = property $
+    overlap a b <> stripPrefixOverlap a b == b
+
+overlappingGCDMonoidLaw_stripSuffixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripSuffixOverlap a b = property $
+    stripSuffixOverlap b a <> overlap a b == a
 
 --------------------------------------------------------------------------------
 -- MonoidNull
