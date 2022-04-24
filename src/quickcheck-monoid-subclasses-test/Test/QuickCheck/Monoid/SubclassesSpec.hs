@@ -12,7 +12,7 @@ module Test.QuickCheck.Monoid.SubclassesSpec where
 import Data.ByteString.Lazy
     ( ByteString )
 import Data.Monoid
-    ( Sum (..) )
+    ( Product (..), Sum (..) )
 import Data.Set
     ( Set )
 import Data.Text
@@ -78,6 +78,21 @@ spec = do
             , rightReductiveLaws
             ]
         testLawsMany @(Set Natural)
+            [ commutativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , reductiveLaws
+            , rightReductiveLaws
+            ]
+        testLawsMany @(Product Int)
+            [ commutativeLaws
+            , leftReductiveLaws
+            , monoidNullLaws
+            , reductiveLaws
+            , rightReductiveLaws
+            ]
+        testLawsMany @(Product Natural)
             [ commutativeLaws
             , leftReductiveLaws
             , monoidNullLaws
