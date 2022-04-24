@@ -21,11 +21,11 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec, describe, parallel )
-import Test.QuickCheck
-    ( Arbitrary (..), arbitrarySizedNatural, shrinkIntegral )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Instances.ByteString
+    ()
+import Test.QuickCheck.Instances.Natural
     ()
 import Test.QuickCheck.Instances.Text
     ()
@@ -121,7 +121,3 @@ spec = do
             , rightCancellativeLaws
             , rightReductiveLaws
             ]
-
-instance Arbitrary Natural where
-    arbitrary = arbitrarySizedNatural
-    shrink = shrinkIntegral
