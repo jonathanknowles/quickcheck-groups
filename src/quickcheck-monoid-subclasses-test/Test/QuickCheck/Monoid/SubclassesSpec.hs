@@ -9,12 +9,16 @@
 --
 module Test.QuickCheck.Monoid.SubclassesSpec where
 
+import Data.Monoid
+    ( Sum (..) )
 import Data.Set
     ( Set )
+import Data.Word
+    ( Word8 )
 import Test.Hspec
     ( Spec, describe, parallel )
 import Test.QuickCheck
-    ( Arbitrary (..), Gen, oneof, suchThat )
+    ( Arbitrary (..), Gen, NonNegative (..), oneof, suchThat )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Monoid.Subclasses
@@ -41,6 +45,13 @@ spec = do
             , monoidNullLaws
             ]
         testLawsMany @(Set Int)
+            [ commutativeLaws
+            , leftReductiveLaws
+            , rightReductiveLaws
+            , reductiveLaws
+            , monoidNullLaws
+            ]
+        testLawsMany @(Sum Int)
             [ commutativeLaws
             , leftReductiveLaws
             , rightReductiveLaws

@@ -29,7 +29,7 @@ import Prelude hiding
 import Data.Function
     ( (&) )
 import Data.Maybe
-    ( isJust, isNothing )
+    ( isJust )
 import Data.Monoid.Null
     ( MonoidNull (..) )
 import Data.Proxy
@@ -116,8 +116,7 @@ leftReductiveLaw_isPrefix_stripPrefix_True a b =
 leftReductiveLaw_isPrefix_stripPrefix_False
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_isPrefix_stripPrefix_False a b =
-    not (a `isPrefixOf` b)
-        ==> leftReductiveLaw_isPrefix_stripPrefix a b
+    leftReductiveLaw_isPrefix_stripPrefix (a <> b) b
     & cover 50 (a /= b) "a /= b"
 
 leftReductiveLaw_stripPrefix
@@ -135,8 +134,7 @@ leftReductiveLaw_stripPrefix_Just a b =
 leftReductiveLaw_stripPrefix_Nothing
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_stripPrefix_Nothing a b =
-    isNothing (stripPrefix a b)
-        ==> leftReductiveLaw_stripPrefix a b
+    leftReductiveLaw_stripPrefix a b
     & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
@@ -181,8 +179,7 @@ rightReductiveLaw_isSuffix_stripSuffix_True a b =
 rightReductiveLaw_isSuffix_stripSuffix_False
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_isSuffix_stripSuffix_False a b =
-    not (a `isSuffixOf` b)
-        ==> rightReductiveLaw_isSuffix_stripSuffix a b
+    rightReductiveLaw_isSuffix_stripSuffix a b
     & cover 50 (a /= b) "a /= b"
 
 rightReductiveLaw_stripSuffix
@@ -200,8 +197,7 @@ rightReductiveLaw_stripSuffix_Just a b =
 rightReductiveLaw_stripSuffix_Nothing
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_stripSuffix_Nothing a b =
-    isNothing (stripSuffix a b)
-        ==> rightReductiveLaw_stripSuffix a b
+    rightReductiveLaw_stripSuffix a b
     & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
@@ -246,8 +242,7 @@ reductiveLaw_equivalence_prefix_True a b =
 reductiveLaw_equivalence_prefix_False
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_prefix_False a b =
-    not (a `isPrefixOf` b)
-        ==> reductiveLaw_equivalence_prefix a b
+    reductiveLaw_equivalence_prefix a b
     & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_equivalence_suffix
@@ -265,8 +260,7 @@ reductiveLaw_equivalence_suffix_True a b =
 reductiveLaw_equivalence_suffix_False
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_suffix_False a b =
-    not (a `isSuffixOf` b)
-        ==> reductiveLaw_equivalence_suffix a b
+    reductiveLaw_equivalence_suffix a b
     & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_prefix
@@ -284,8 +278,7 @@ reductiveLaw_inversion_prefix_Just a b =
 reductiveLaw_inversion_prefix_Nothing
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_prefix_Nothing a b =
-    isNothing (a </> b)
-        ==> reductiveLaw_inversion_prefix a b
+    reductiveLaw_inversion_prefix a b
     & cover 50 (a /= b) "a /= b"
 
 reductiveLaw_inversion_suffix
@@ -303,8 +296,7 @@ reductiveLaw_inversion_suffix_Just a b =
 reductiveLaw_inversion_suffix_Nothing
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_suffix_Nothing a b =
-    isNothing (a </> b)
-        ==> reductiveLaw_inversion_suffix a b
+    reductiveLaw_inversion_suffix a b
     & cover 50 (a /= b) "a /= b"
 
 --------------------------------------------------------------------------------
@@ -389,7 +381,7 @@ monoidNullLaw_basic
     :: (Eq a, MonoidNull a) => a -> Property
 monoidNullLaw_basic a =
     null a == (a == mempty)
-        & cover 5  (a == mempty) "a == mempty"
+        & cover  1 (a == mempty) "a == mempty"
         & cover 50 (a /= mempty) "a /= mempty"
 
 --------------------------------------------------------------------------------
