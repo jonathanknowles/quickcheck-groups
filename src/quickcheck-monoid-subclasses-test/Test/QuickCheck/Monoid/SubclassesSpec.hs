@@ -35,6 +35,7 @@ import Test.QuickCheck.Monoid.Subclasses
     , leftCancellativeLaws
     , leftReductiveLaws
     , monoidNullLaws
+    , monusLaws
     , overlappingGCDMonoidLaws
     , rightCancellativeLaws
     , rightReductiveLaws
@@ -73,6 +74,7 @@ spec = do
             [ commutativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightReductiveLaws
@@ -81,6 +83,7 @@ spec = do
             [ commutativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightReductiveLaws
@@ -96,6 +99,7 @@ spec = do
             [ commutativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightReductiveLaws
@@ -116,6 +120,7 @@ spec = do
             , leftCancellativeLaws
             , leftReductiveLaws
             , monoidNullLaws
+            , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws

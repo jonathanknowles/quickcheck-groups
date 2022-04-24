@@ -18,6 +18,7 @@ module Test.QuickCheck.Monoid.Subclasses
     , leftCancellativeLaws
     , leftReductiveLaws
     , monoidNullLaws
+    , monusLaws
     , overlappingGCDMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
@@ -32,6 +33,8 @@ import Data.Maybe
     ( isJust )
 import Data.Monoid.Cancellative
     ( OverlappingGCDMonoid (..) )
+import Data.Monoid.Monus
+    ( Monus (..) )
 import Data.Monoid.Null
     ( MonoidNull (..) )
 import Data.Proxy
@@ -56,9 +59,6 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
-
--- TODO:
--- Add other mconcat laws that stimulate the production of Nothing.
 
 --------------------------------------------------------------------------------
 -- Commutative
@@ -367,6 +367,33 @@ overlappingGCDMonoidLaw_stripSuffixOverlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
 overlappingGCDMonoidLaw_stripSuffixOverlap a b = property $
     stripSuffixOverlap b a <> overlap a b == a
+
+--------------------------------------------------------------------------------
+-- Monus
+--------------------------------------------------------------------------------
+
+monusLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Monus a)
+    => Proxy a
+    -> Laws
+monusLaws _ = Laws "Monus"
+    [ makeLaw2 @a
+        "monusLaw_stripPrefixOverlap"
+        (monusLaw_stripPrefixOverlap)
+    , makeLaw2 @a
+        "monusLaw_stripSuffixOverlap"
+        (monusLaw_stripSuffixOverlap)
+    ]
+
+monusLaw_stripPrefixOverlap
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripPrefixOverlap a b = property $
+    a <\> b == stripPrefixOverlap b a
+
+monusLaw_stripSuffixOverlap
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripSuffixOverlap a b = property $
+    a <\> b == stripSuffixOverlap b a
 
 --------------------------------------------------------------------------------
 -- MonoidNull
