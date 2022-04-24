@@ -88,14 +88,14 @@ leftReductiveLaws _ = Laws "LeftReductive"
         "leftReductiveLaw_isPrefix_stripPrefix"
         (leftReductiveLaw_isPrefix_stripPrefix @a)
     , makeLaw2
-        "leftReductiveLaw_isPrefix_stripPrefix_Just"
-        (leftReductiveLaw_isPrefix_stripPrefix_Just @a)
+        "leftReductiveLaw_isPrefix_stripPrefix_mappend"
+        (leftReductiveLaw_isPrefix_stripPrefix_mappend @a)
     , makeLaw2
         "leftReductiveLaw_stripPrefix"
         (leftReductiveLaw_stripPrefix @a)
     , makeLaw2
-        "leftReductiveLaw_stripPrefix_Just"
-        (leftReductiveLaw_stripPrefix_Just @a)
+        "leftReductiveLaw_stripPrefix_mappend"
+        (leftReductiveLaw_stripPrefix_mappend @a)
     ]
 
 leftReductiveLaw_isPrefix
@@ -108,9 +108,9 @@ leftReductiveLaw_isPrefix_stripPrefix
 leftReductiveLaw_isPrefix_stripPrefix a b = property $
     isPrefixOf a b == isJust (stripPrefix a b)
 
-leftReductiveLaw_isPrefix_stripPrefix_Just
+leftReductiveLaw_isPrefix_stripPrefix_mappend
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_isPrefix_stripPrefix_Just a b =
+leftReductiveLaw_isPrefix_stripPrefix_mappend a b =
     isJust (stripPrefix a (a <> b))
         ==> leftReductiveLaw_isPrefix_stripPrefix a (a <> b)
 
@@ -119,9 +119,9 @@ leftReductiveLaw_stripPrefix
 leftReductiveLaw_stripPrefix a b = property $
     maybe b (a <>) (stripPrefix a b) == b
 
-leftReductiveLaw_stripPrefix_Just
+leftReductiveLaw_stripPrefix_mappend
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_stripPrefix_Just a b =
+leftReductiveLaw_stripPrefix_mappend a b =
     isJust (stripPrefix a (a <> b))
         ==> leftReductiveLaw_stripPrefix a (a <> b)
 
@@ -141,14 +141,14 @@ rightReductiveLaws _ = Laws "RightReductive"
         "rightReductiveLaw_isSuffix_stripSuffix"
         (rightReductiveLaw_isSuffix_stripSuffix @a)
     , makeLaw2
-        "rightReductiveLaw_isSuffix_stripSuffix_Just"
-        (rightReductiveLaw_isSuffix_stripSuffix_Just @a)
+        "rightReductiveLaw_isSuffix_stripSuffix_mappend"
+        (rightReductiveLaw_isSuffix_stripSuffix_mappend @a)
     , makeLaw2
         "rightReductiveLaw_stripSuffix"
         (rightReductiveLaw_stripSuffix @a)
     , makeLaw2
-        "rightReductiveLaw_stripSuffix_Just"
-        (rightReductiveLaw_stripSuffix_Just @a)
+        "rightReductiveLaw_stripSuffix_mappend"
+        (rightReductiveLaw_stripSuffix_mappend @a)
     ]
 
 rightReductiveLaw_isSuffix
@@ -161,9 +161,9 @@ rightReductiveLaw_isSuffix_stripSuffix
 rightReductiveLaw_isSuffix_stripSuffix a b = property $
     isSuffixOf a b == isJust (stripSuffix a b)
 
-rightReductiveLaw_isSuffix_stripSuffix_Just
+rightReductiveLaw_isSuffix_stripSuffix_mappend
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix_stripSuffix_Just a b =
+rightReductiveLaw_isSuffix_stripSuffix_mappend a b =
     isJust (stripSuffix b (a <> b))
     ==> rightReductiveLaw_isSuffix_stripSuffix b (a <> b)
 
@@ -172,9 +172,9 @@ rightReductiveLaw_stripSuffix
 rightReductiveLaw_stripSuffix a b = property $
     maybe b (<> a) (stripSuffix a b) == b
 
-rightReductiveLaw_stripSuffix_Just
+rightReductiveLaw_stripSuffix_mappend
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_stripSuffix_Just a b =
+rightReductiveLaw_stripSuffix_mappend a b =
     isJust (stripSuffix b (a <> b))
     ==> rightReductiveLaw_stripSuffix a (a <> b)
 
@@ -191,26 +191,26 @@ reductiveLaws _ = Laws "Reductive"
         "reductiveLaw_equivalence_prefix"
         (reductiveLaw_equivalence_prefix @a)
     , makeLaw2
-        "reductiveLaw_equivalence_prefix_Just"
-        (reductiveLaw_equivalence_prefix_Just @a)
+        "reductiveLaw_equivalence_prefix_mappend"
+        (reductiveLaw_equivalence_prefix_mappend @a)
     , makeLaw2
         "reductiveLaw_equivalence_suffix"
         (reductiveLaw_equivalence_suffix @a)
     , makeLaw2
-        "reductiveLaw_equivalence_suffix_Just"
-        (reductiveLaw_equivalence_suffix_Just @a)
+        "reductiveLaw_equivalence_suffix_mappend"
+        (reductiveLaw_equivalence_suffix_mappend @a)
     , makeLaw2
         "reductiveLaw_inversion_prefix"
         (reductiveLaw_inversion_prefix @a)
     , makeLaw2
-        "reductiveLaw_inversion_prefix_Just"
-        (reductiveLaw_inversion_prefix_Just @a)
+        "reductiveLaw_inversion_prefix_mappend"
+        (reductiveLaw_inversion_prefix_mappend @a)
     , makeLaw2
         "reductiveLaw_inversion_suffix"
         (reductiveLaw_inversion_suffix @a)
     , makeLaw2
-        "reductiveLaw_inversion_suffix_Just"
-        (reductiveLaw_inversion_suffix_Just @a)
+        "reductiveLaw_inversion_suffix_mappend"
+        (reductiveLaw_inversion_suffix_mappend @a)
     ]
 
 reductiveLaw_equivalence_prefix
@@ -218,9 +218,9 @@ reductiveLaw_equivalence_prefix
 reductiveLaw_equivalence_prefix a b = property $
     a </> b == stripPrefix b a
 
-reductiveLaw_equivalence_prefix_Just
+reductiveLaw_equivalence_prefix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_prefix_Just a b =
+reductiveLaw_equivalence_prefix_mappend a b =
     isJust (stripPrefix a (a <> b))
     ==> reductiveLaw_equivalence_prefix a (a <> b)
 
@@ -229,9 +229,9 @@ reductiveLaw_equivalence_suffix
 reductiveLaw_equivalence_suffix a b = property $
     a </> b == stripSuffix b a
 
-reductiveLaw_equivalence_suffix_Just
+reductiveLaw_equivalence_suffix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_suffix_Just a b =
+reductiveLaw_equivalence_suffix_mappend a b =
     isJust (stripSuffix b (a <> b))
     ==> reductiveLaw_equivalence_suffix b (a <> b)
 
@@ -240,9 +240,9 @@ reductiveLaw_inversion_prefix
 reductiveLaw_inversion_prefix a b = property $
     maybe a (b <>) (a </> b) == a
 
-reductiveLaw_inversion_prefix_Just
+reductiveLaw_inversion_prefix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_prefix_Just a b =
+reductiveLaw_inversion_prefix_mappend a b =
     isJust ((a <> b) </> a)
     ==> reductiveLaw_inversion_prefix (a <> b) a
 
@@ -251,9 +251,9 @@ reductiveLaw_inversion_suffix
 reductiveLaw_inversion_suffix a b = property $
     maybe a (<> b) (a </> b) == a
 
-reductiveLaw_inversion_suffix_Just
+reductiveLaw_inversion_suffix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_suffix_Just a b =
+reductiveLaw_inversion_suffix_mappend a b =
     isJust ((a <> b) </> a)
     ==> reductiveLaw_inversion_suffix (a <> b) a
 
