@@ -1,0 +1,32 @@
+cabal-version:  3.0
+name:           quickcheck-monoid-subclasses
+version:        0.0.0
+bug-reports:    https://github.com/jonathanknowles/quickcheck-monoid-subclasses/issues
+license:        Apache-2.0
+license-file:   LICENSE
+author:         Jonathan Knowles
+maintainer:     mail@jonathanknowles.net
+copyright:      2022 Jonathan Knowles
+category:       Testing
+synopsis:       QuickCheck support for Monoid subclasses
+description:
+    QuickCheck support for Monoid subclasses.
+
+extra-source-files:
+    README.md
+
+source-repository head
+    type: git
+    location: https://github.com/jonathanknowles/quickcheck-monoid-subclasses
+
+library
+    hs-source-dirs:
+        src/quickcheck-monoid-subclasses
+    exposed-modules:
+    default-language:
+        Haskell2010
+    build-depends:
+        base >=4.7 && <5
+      , monoid-subclasses
+      , QuickCheck
+      , quickcheck-classes
