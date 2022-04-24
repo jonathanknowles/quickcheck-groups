@@ -26,8 +26,6 @@ module Test.QuickCheck.Monoid.Subclasses
 import Prelude hiding
     ( null )
 
-import Data.Function
-    ( (&) )
 import Data.Maybe
     ( isJust )
 import Data.Monoid.Null
@@ -64,8 +62,8 @@ commutativeLaws
     => Proxy a
     -> Laws
 commutativeLaws _ = Laws "Commutative"
-    [ makeLaw "Basic"
-        $ makeProperty2 $ commutativeLaw_basic @a
+    [ makeLaw2 @a "Basic"
+        commutativeLaw_basic
     ]
 
 commutativeLaw_basic
@@ -82,16 +80,16 @@ leftReductiveLaws
     => Proxy a
     -> Laws
 leftReductiveLaws _ = Laws "LeftReductive"
-    [ makeLaw "isPrefix"
-        $ makeProperty2 $ leftReductiveLaw_isPrefix @a
-    , makeLaw "isPrefix stripPrefix"
-        $ makeProperty2 $ leftReductiveLaw_isPrefix_stripPrefix @a
-    , makeLaw "isPrefix stripPrefix (Just)"
-        $ makeProperty2 $ leftReductiveLaw_isPrefix_stripPrefix_Just @a
-    , makeLaw "stripPrefix"
-        $ makeProperty2 $ leftReductiveLaw_stripPrefix @a
-    , makeLaw "stripPrefix (Just)"
-        $ makeProperty2 $ leftReductiveLaw_stripPrefix_Just @a
+    [ makeLaw2 @a "isPrefix"
+        leftReductiveLaw_isPrefix
+    , makeLaw2 @a "isPrefix stripPrefix"
+        leftReductiveLaw_isPrefix_stripPrefix
+    , makeLaw2 @a "isPrefix stripPrefix (Just)"
+        leftReductiveLaw_isPrefix_stripPrefix_Just
+    , makeLaw2 @a "stripPrefix"
+        leftReductiveLaw_stripPrefix
+    , makeLaw2 @a "stripPrefix (Just)"
+        leftReductiveLaw_stripPrefix_Just
     ]
 
 leftReductiveLaw_isPrefix
@@ -130,16 +128,16 @@ rightReductiveLaws
     => Proxy a
     -> Laws
 rightReductiveLaws _ = Laws "RightReductive"
-    [ makeLaw "isSuffix"
-        $ makeProperty2 $ rightReductiveLaw_isSuffix @a
-    , makeLaw "isSuffix stripSuffix"
-        $ makeProperty2 $ rightReductiveLaw_isSuffix_stripSuffix @a
-    , makeLaw "isSuffix stripSuffix (Just)"
-        $ makeProperty2 $ rightReductiveLaw_isSuffix_stripSuffix_Just @a
-    , makeLaw "stripSuffix"
-        $ makeProperty2 $ rightReductiveLaw_stripSuffix @a
-    , makeLaw "stripSuffix (Just)"
-        $ makeProperty2 $ rightReductiveLaw_stripSuffix_Just @a
+    [ makeLaw2 @a "isSuffix"
+        rightReductiveLaw_isSuffix
+    , makeLaw2 @a "isSuffix stripSuffix"
+        rightReductiveLaw_isSuffix_stripSuffix
+    , makeLaw2 @a "isSuffix stripSuffix (Just)"
+        rightReductiveLaw_isSuffix_stripSuffix_Just
+    , makeLaw2 @a "stripSuffix"
+        rightReductiveLaw_stripSuffix
+    , makeLaw2 @a "stripSuffix (Just)"
+        rightReductiveLaw_stripSuffix_Just
     ]
 
 rightReductiveLaw_isSuffix
@@ -178,22 +176,22 @@ reductiveLaws
     => Proxy a
     -> Laws
 reductiveLaws _ = Laws "Reductive"
-    [ makeLaw "Equivalence (prefix)"
-        $ makeProperty2 $ reductiveLaw_equivalence_prefix @a
-    , makeLaw "Equivalence (prefix) (Just)"
-        $ makeProperty2 $ reductiveLaw_equivalence_prefix_Just @a
-    , makeLaw "Equivalence (suffix)"
-        $ makeProperty2 $ reductiveLaw_equivalence_suffix @a
-    , makeLaw "Equivalence (suffix) (Just)"
-        $ makeProperty2 $ reductiveLaw_equivalence_suffix_Just @a
-    , makeLaw "Inversion (prefix)"
-        $ makeProperty2 $ reductiveLaw_inversion_prefix @a
-    , makeLaw "Inversion (prefix) (Just)"
-        $ makeProperty2 $ reductiveLaw_inversion_prefix_Just @a
-    , makeLaw "Inversion (suffix)"
-        $ makeProperty2 $ reductiveLaw_inversion_suffix @a
-    , makeLaw "Inversion (suffix) (Just)"
-        $ makeProperty2 $ reductiveLaw_inversion_suffix_Just @a
+    [ makeLaw2 @a "Equivalence (prefix)"
+        reductiveLaw_equivalence_prefix
+    , makeLaw2 @a "Equivalence (prefix) (Just)"
+        reductiveLaw_equivalence_prefix_Just
+    , makeLaw2 @a "Equivalence (suffix)"
+        reductiveLaw_equivalence_suffix
+    , makeLaw2 @a "Equivalence (suffix) (Just)"
+        reductiveLaw_equivalence_suffix_Just
+    , makeLaw2 @a "Inversion (prefix)"
+        reductiveLaw_inversion_prefix
+    , makeLaw2 @a "Inversion (prefix) (Just)"
+        reductiveLaw_inversion_prefix_Just
+    , makeLaw2 @a "Inversion (suffix)"
+        reductiveLaw_inversion_suffix
+    , makeLaw2 @a "Inversion (suffix) (Just)"
+        reductiveLaw_inversion_suffix_Just
     ]
 
 reductiveLaw_equivalence_prefix
@@ -249,8 +247,8 @@ leftCancellativeLaws
     => Proxy a
     -> Laws
 leftCancellativeLaws _ = Laws "LeftCancellative"
-    [ makeLaw "Cancellation"
-        $ makeProperty2 $ leftCancellativeLaw_cancellation @a
+    [ makeLaw2 @a "Cancellation"
+        leftCancellativeLaw_cancellation
     ]
 
 leftCancellativeLaw_cancellation
@@ -267,8 +265,8 @@ rightCancellativeLaws
     => Proxy a
     -> Laws
 rightCancellativeLaws _ = Laws "RightCancellative"
-    [ makeLaw "Cancellation"
-        $ makeProperty2 $ rightCancellativeLaw_cancellation @a
+    [ makeLaw2 @a "Cancellation"
+        rightCancellativeLaw_cancellation
     ]
 
 rightCancellativeLaw_cancellation
@@ -285,10 +283,10 @@ cancellativeLaws
     => Proxy a
     -> Laws
 cancellativeLaws _ = Laws "Cancellative"
-    [ makeLaw "Cancellation (prefix)"
-        $ makeProperty2 $ cancellativeLaw_cancellation_prefix @a
-    , makeLaw "Cancellation (suffix)"
-        $ makeProperty2 $ cancellativeLaw_cancellation_suffix @a
+    [ makeLaw2 @a "Cancellation (prefix)"
+        cancellativeLaw_cancellation_prefix
+    , makeLaw2 @a "Cancellation (suffix)"
+        cancellativeLaw_cancellation_suffix
     ]
 
 cancellativeLaw_cancellation_prefix
@@ -310,8 +308,8 @@ monoidNullLaws
     => Proxy a
     -> Laws
 monoidNullLaws _ = Laws "MonoidNull"
-    [ makeLaw "Basic"
-        $ makeProperty1 $ monoidNullLaw_basic @a
+    [ makeLaw1 @a "Basic"
+        monoidNullLaw_basic
     ]
 
 monoidNullLaw_basic
@@ -326,6 +324,20 @@ monoidNullLaw_basic a = property $
 makeLaw :: Testable t => String -> t -> (String, Property)
 makeLaw title t = (title, checkCoverage $ property t)
 
+makeLaw1
+    :: (Arbitrary a, Show a, Eq a, Monoid a)
+    => String
+    -> (a -> Property)
+    -> (String, Property)
+makeLaw1 s p = makeLaw s $ makeProperty1 p
+
+makeLaw2
+    :: (Arbitrary a, Show a, Eq a, Testable t)
+    => String
+    -> (a -> a -> t)
+    -> (String, Property)
+makeLaw2 s p = makeLaw s $ makeProperty2 p
+
 makeProperty1 :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
 makeProperty1 p a
     = cover  1 (a == mempty) "a == mempty"
@@ -334,5 +346,6 @@ makeProperty1 p a
 
 makeProperty2 :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
 makeProperty2 p a b
-    = cover 50 (a /= b) "a /= b"
+    = cover  1 (a == b) "a == b"
+    $ cover 50 (a /= b) "a /= b"
     $ property $ p a b
