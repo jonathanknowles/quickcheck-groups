@@ -437,12 +437,12 @@ makeLaw2 s = makeLaw s . makeProperty2
 
 makeProperty1 :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
 makeProperty1 p a
-    = cover  1 (a == mempty) "a == mempty"
-    $ cover 50 (a /= mempty) "a /= mempty"
+    = cover  0.1 (a == mempty) "a == mempty"
+    $ cover 20.0 (a /= mempty) "a /= mempty"
     $ property $ p a
 
 makeProperty2 :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
 makeProperty2 p a b
-    = cover  1 (a == b) "a == b"
-    $ cover 50 (a /= b) "a /= b"
+    = cover  0.1 (a == b) "a == b"
+    $ cover 20.0 (a /= b) "a /= b"
     $ property $ p a b
