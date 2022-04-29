@@ -89,14 +89,11 @@ leftReductiveLaws
     -> Laws
 leftReductiveLaws _ = Laws "LeftReductive"
     [ makeLaw2 @a
-        "leftReductiveLaw_isPrefix"
-        (leftReductiveLaw_isPrefix)
+        "leftReductiveLaw_isPrefix_mappend"
+        (leftReductiveLaw_isPrefix_mappend)
     , makeLaw2 @a
         "leftReductiveLaw_isPrefix_stripPrefix"
         (leftReductiveLaw_isPrefix_stripPrefix)
-    , makeLaw2 @a
-        "leftReductiveLaw_isPrefix_stripPrefix_mappend"
-        (leftReductiveLaw_isPrefix_stripPrefix_mappend)
     , makeLaw2 @a
         "leftReductiveLaw_stripPrefix"
         (leftReductiveLaw_stripPrefix)
@@ -105,21 +102,15 @@ leftReductiveLaws _ = Laws "LeftReductive"
         (leftReductiveLaw_stripPrefix_mappend)
     ]
 
-leftReductiveLaw_isPrefix
+leftReductiveLaw_isPrefix_mappend
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_isPrefix a b = property $
+leftReductiveLaw_isPrefix_mappend a b = property $
     a `isPrefixOf` (a <> b)
 
 leftReductiveLaw_isPrefix_stripPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
 leftReductiveLaw_isPrefix_stripPrefix a b = property $
     isPrefixOf a b == isJust (stripPrefix a b)
-
-leftReductiveLaw_isPrefix_stripPrefix_mappend
-    :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_isPrefix_stripPrefix_mappend a b =
-    isJust (stripPrefix a (a <> b))
-        ==> leftReductiveLaw_isPrefix_stripPrefix a (a <> b)
 
 leftReductiveLaw_stripPrefix
     :: (Eq a, LeftReductive a) => a -> a -> Property
@@ -128,9 +119,8 @@ leftReductiveLaw_stripPrefix a b = property $
 
 leftReductiveLaw_stripPrefix_mappend
     :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_stripPrefix_mappend a b =
-    isJust (stripPrefix a (a <> b))
-        ==> leftReductiveLaw_stripPrefix a (a <> b)
+leftReductiveLaw_stripPrefix_mappend a b = property $
+    fmap (a <>) (stripPrefix a (a <> b)) == Just (a <> b)
 
 --------------------------------------------------------------------------------
 -- RightReductive
@@ -142,14 +132,11 @@ rightReductiveLaws
     -> Laws
 rightReductiveLaws _ = Laws "RightReductive"
     [ makeLaw2 @a
-        "rightReductiveLaw_isSuffix"
-        (rightReductiveLaw_isSuffix)
+        "rightReductiveLaw_isSuffix_mappend"
+        (rightReductiveLaw_isSuffix_mappend)
     , makeLaw2 @a
         "rightReductiveLaw_isSuffix_stripSuffix"
         (rightReductiveLaw_isSuffix_stripSuffix)
-    , makeLaw2 @a
-        "rightReductiveLaw_isSuffix_stripSuffix_mappend"
-        (rightReductiveLaw_isSuffix_stripSuffix_mappend)
     , makeLaw2 @a
         "rightReductiveLaw_stripSuffix"
         (rightReductiveLaw_stripSuffix)
@@ -158,21 +145,15 @@ rightReductiveLaws _ = Laws "RightReductive"
         (rightReductiveLaw_stripSuffix_mappend)
     ]
 
-rightReductiveLaw_isSuffix
+rightReductiveLaw_isSuffix_mappend
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix a b = property $
+rightReductiveLaw_isSuffix_mappend a b = property $
     b `isSuffixOf` (a <> b)
 
 rightReductiveLaw_isSuffix_stripSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
 rightReductiveLaw_isSuffix_stripSuffix a b = property $
     isSuffixOf a b == isJust (stripSuffix a b)
-
-rightReductiveLaw_isSuffix_stripSuffix_mappend
-    :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix_stripSuffix_mappend a b =
-    isJust (stripSuffix b (a <> b))
-    ==> rightReductiveLaw_isSuffix_stripSuffix b (a <> b)
 
 rightReductiveLaw_stripSuffix
     :: (Eq a, RightReductive a) => a -> a -> Property
@@ -181,9 +162,8 @@ rightReductiveLaw_stripSuffix a b = property $
 
 rightReductiveLaw_stripSuffix_mappend
     :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_stripSuffix_mappend a b =
-    isJust (stripSuffix b (a <> b))
-    ==> rightReductiveLaw_stripSuffix a (a <> b)
+rightReductiveLaw_stripSuffix_mappend a b = property $
+    fmap (<> b) (stripSuffix b (a <> b)) == Just (a <> b)
 
 --------------------------------------------------------------------------------
 -- Reductive
