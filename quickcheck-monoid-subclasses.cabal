@@ -50,6 +50,7 @@ test-suite quickcheck-monoid-subclasses-test
       , bytestring
       , containers
       , hspec
+      , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
       , quickcheck-instances
