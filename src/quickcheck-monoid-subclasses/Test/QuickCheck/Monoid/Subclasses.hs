@@ -46,9 +46,9 @@ import Data.Semigroup.Cancellative
     , Commutative
     , LeftCancellative
     , LeftReductive (..)
+    , Reductive (..)
     , RightCancellative
     , RightReductive (..)
-    , Reductive (..)
     )
 import Test.QuickCheck
     ( Arbitrary (..)
@@ -61,6 +61,35 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
+
+--------------------------------------------------------------------------------
+-- Cancellative
+--------------------------------------------------------------------------------
+
+cancellativeLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a)
+    => Proxy a
+    -> Laws
+cancellativeLaws _ = Laws "Cancellative"
+    [ makeLaw2 @a
+        "cancellativeLaw_cancellation_prefix"
+        (cancellativeLaw_cancellation_prefix)
+    , makeLaw2 @a
+        "cancellativeLaw_cancellation_suffix"
+        (cancellativeLaw_cancellation_suffix)
+    ]
+
+cancellativeLaw_cancellation_prefix
+    :: (Eq a, Cancellative a) => a -> a -> Property
+cancellativeLaw_cancellation_prefix a b = makeProperty
+    "(a <> b) </> a == Just b"
+    ((a <> b) </> a == Just b)
+
+cancellativeLaw_cancellation_suffix
+    :: (Eq a, Cancellative a) => a -> a -> Property
+cancellativeLaw_cancellation_suffix a b = makeProperty
+    "(a <> b) </> b == Just a"
+    ((a <> b) </> b == Just a)
 
 --------------------------------------------------------------------------------
 -- Commutative
@@ -81,6 +110,26 @@ commutativeLaw_basic
 commutativeLaw_basic a b = makeProperty
     "a <> b == b <> a"
     (a <> b == b <> a)
+
+--------------------------------------------------------------------------------
+-- LeftCancellative
+--------------------------------------------------------------------------------
+
+leftCancellativeLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, LeftCancellative a)
+    => Proxy a
+    -> Laws
+leftCancellativeLaws _ = Laws "LeftCancellative"
+    [ makeLaw2 @a
+        "leftCancellativeLaw_cancellation"
+        (leftCancellativeLaw_cancellation)
+    ]
+
+leftCancellativeLaw_cancellation
+    :: (Eq a, LeftCancellative a) => a -> a -> Property
+leftCancellativeLaw_cancellation a b = makeProperty
+    "stripPrefix a (a <> b) == Just b"
+    (stripPrefix a (a <> b) == Just b)
 
 --------------------------------------------------------------------------------
 -- LeftReductive
@@ -130,51 +179,135 @@ leftReductiveLaw_stripPrefix_mappend a b = makeProperty
     (fmap (a <>) (stripPrefix a (a <> b)) == Just (a <> b))
 
 --------------------------------------------------------------------------------
--- RightReductive
+-- MonoidNull
 --------------------------------------------------------------------------------
 
-rightReductiveLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, RightReductive a)
+monoidNullLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, MonoidNull a)
     => Proxy a
     -> Laws
-rightReductiveLaws _ = Laws "RightReductive"
-    [ makeLaw2 @a
-        "rightReductiveLaw_isSuffix_mappend"
-        (rightReductiveLaw_isSuffix_mappend)
-    , makeLaw2 @a
-        "rightReductiveLaw_isSuffix_stripSuffix"
-        (rightReductiveLaw_isSuffix_stripSuffix)
-    , makeLaw2 @a
-        "rightReductiveLaw_stripSuffix"
-        (rightReductiveLaw_stripSuffix)
-    , makeLaw2 @a
-        "rightReductiveLaw_stripSuffix_mappend"
-        (rightReductiveLaw_stripSuffix_mappend)
+monoidNullLaws _ = Laws "MonoidNull"
+    [ makeLaw1 @a
+        "monoidNullLaw_basic"
+        (monoidNullLaw_basic)
     ]
 
-rightReductiveLaw_isSuffix_mappend
-    :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix_mappend a b = makeProperty
-    "b `isSuffixOf` (a <> b)"
-    (b `isSuffixOf` (a <> b))
+monoidNullLaw_basic
+    :: (Eq a, MonoidNull a) => a -> Property
+monoidNullLaw_basic a = makeProperty
+    "null a == (a == mempty)"
+    (null a == (a == mempty))
 
-rightReductiveLaw_isSuffix_stripSuffix
-    :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_isSuffix_stripSuffix a b = makeProperty
-    "isSuffixOf a b == isJust (stripSuffix a b)"
-    (isSuffixOf a b == isJust (stripSuffix a b))
+--------------------------------------------------------------------------------
+-- Monus
+--------------------------------------------------------------------------------
 
-rightReductiveLaw_stripSuffix
-    :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_stripSuffix a b = makeProperty
-    "maybe b (<> a) (stripSuffix a b) == b"
-    (maybe b (<> a) (stripSuffix a b) == b)
+monusLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Monus a)
+    => Proxy a
+    -> Laws
+monusLaws _ = Laws "Monus"
+    [ makeLaw2 @a
+        "monusLaw_stripPrefixOverlap"
+        (monusLaw_stripPrefixOverlap)
+    , makeLaw2 @a
+        "monusLaw_stripPrefixOverlap_mappend"
+        (monusLaw_stripPrefixOverlap_mappend)
+    , makeLaw2 @a
+        "monusLaw_stripSuffixOverlap"
+        (monusLaw_stripSuffixOverlap)
+    , makeLaw2 @a
+        "monusLaw_stripSuffixOverlap_mappend"
+        (monusLaw_stripSuffixOverlap_mappend)
+    ]
 
-rightReductiveLaw_stripSuffix_mappend
-    :: (Eq a, RightReductive a) => a -> a -> Property
-rightReductiveLaw_stripSuffix_mappend a b = makeProperty
-    "fmap (<> b) (stripSuffix b (a <> b)) == Just (a <> b)"
-    (fmap (<> b) (stripSuffix b (a <> b)) == Just (a <> b))
+monusLaw_stripPrefixOverlap
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripPrefixOverlap a b = makeProperty
+    "a <\\> b == stripPrefixOverlap b a"
+    (a <\\> b == stripPrefixOverlap b a)
+  where
+    (<\\>) = (<\>)
+
+monusLaw_stripPrefixOverlap_mappend
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripPrefixOverlap_mappend a b = makeProperty
+    "(b <> a) <\\> b == stripPrefixOverlap b (b <> a)"
+    ((b <> a) <\\> b == stripPrefixOverlap b (b <> a))
+  where
+    (<\\>) = (<\>)
+
+monusLaw_stripSuffixOverlap
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripSuffixOverlap a b = makeProperty
+    "a <\\> b == stripSuffixOverlap b a"
+    (a <\\> b == stripSuffixOverlap b a)
+  where
+    (<\\>) = (<\>)
+
+monusLaw_stripSuffixOverlap_mappend
+    :: (Eq a, Monus a) => a -> a -> Property
+monusLaw_stripSuffixOverlap_mappend a b = makeProperty
+    "(a <> b) <\\> b == stripSuffixOverlap b (a <> b)"
+    ((a <> b) <\\> b == stripSuffixOverlap b (a <> b))
+  where
+    (<\\>) = (<\>)
+
+--------------------------------------------------------------------------------
+-- OverlappingGCDMonoid
+--------------------------------------------------------------------------------
+
+overlappingGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, OverlappingGCDMonoid a)
+    => Proxy a
+    -> Laws
+overlappingGCDMonoidLaws _ = Laws "OverlappingGCDMonoid"
+    [ makeLaw2 @a
+        "overlappingGCDMonoidLaw_overlap_stripPrefixOverlap"
+        (overlappingGCDMonoidLaw_overlap_stripPrefixOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_overlap_stripSuffixOverlap"
+        (overlappingGCDMonoidLaw_overlap_stripSuffixOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap_overlap"
+        (overlappingGCDMonoidLaw_stripOverlap_overlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap"
+        (overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap"
+        (overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap)
+    ]
+
+overlappingGCDMonoidLaw_overlap_stripPrefixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_overlap_stripPrefixOverlap a b = makeProperty
+    "overlap a b <> stripPrefixOverlap a b == b"
+    (overlap a b <> stripPrefixOverlap a b == b)
+
+overlappingGCDMonoidLaw_overlap_stripSuffixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_overlap_stripSuffixOverlap a b = makeProperty
+    "stripSuffixOverlap b a <> overlap a b == a"
+    (stripSuffixOverlap b a <> overlap a b == a)
+
+overlappingGCDMonoidLaw_stripOverlap_overlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_overlap a b = makeProperty
+    "(λ(_, x, _) -> x) (stripOverlap a b) == overlap a b"
+    ((\(_, x, _) -> x) (stripOverlap a b) == overlap a b)
+
+overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap a b = makeProperty
+    "(λ(_, _, x) -> x) (stripOverlap a b) == stripPrefixOverlap a b"
+    ((\(_, _, x) -> x) (stripOverlap a b) == stripPrefixOverlap a b)
+
+overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b = makeProperty
+    "(λ(x, _, _) -> x) (stripOverlap a b) == stripSuffixOverlap b a"
+    ((\(x, _, _) -> x) (stripOverlap a b) == stripSuffixOverlap b a)
 
 --------------------------------------------------------------------------------
 -- Reductive
@@ -260,26 +393,6 @@ reductiveLaw_inversion_suffix_mappend a b = makeProperty
     (fmap (<> b) ((a <> b) </> b) == Just (a <> b))
 
 --------------------------------------------------------------------------------
--- LeftCancellative
---------------------------------------------------------------------------------
-
-leftCancellativeLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, LeftCancellative a)
-    => Proxy a
-    -> Laws
-leftCancellativeLaws _ = Laws "LeftCancellative"
-    [ makeLaw2 @a
-        "leftCancellativeLaw_cancellation"
-        (leftCancellativeLaw_cancellation)
-    ]
-
-leftCancellativeLaw_cancellation
-    :: (Eq a, LeftCancellative a) => a -> a -> Property
-leftCancellativeLaw_cancellation a b = makeProperty
-    "stripPrefix a (a <> b) == Just b"
-    (stripPrefix a (a <> b) == Just b)
-
---------------------------------------------------------------------------------
 -- RightCancellative
 --------------------------------------------------------------------------------
 
@@ -300,164 +413,51 @@ rightCancellativeLaw_cancellation a b = makeProperty
     (stripSuffix b (a <> b) == Just a)
 
 --------------------------------------------------------------------------------
--- Cancellative
+-- RightReductive
 --------------------------------------------------------------------------------
 
-cancellativeLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a)
+rightReductiveLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, RightReductive a)
     => Proxy a
     -> Laws
-cancellativeLaws _ = Laws "Cancellative"
+rightReductiveLaws _ = Laws "RightReductive"
     [ makeLaw2 @a
-        "cancellativeLaw_cancellation_prefix"
-        (cancellativeLaw_cancellation_prefix)
+        "rightReductiveLaw_isSuffix_mappend"
+        (rightReductiveLaw_isSuffix_mappend)
     , makeLaw2 @a
-        "cancellativeLaw_cancellation_suffix"
-        (cancellativeLaw_cancellation_suffix)
+        "rightReductiveLaw_isSuffix_stripSuffix"
+        (rightReductiveLaw_isSuffix_stripSuffix)
+    , makeLaw2 @a
+        "rightReductiveLaw_stripSuffix"
+        (rightReductiveLaw_stripSuffix)
+    , makeLaw2 @a
+        "rightReductiveLaw_stripSuffix_mappend"
+        (rightReductiveLaw_stripSuffix_mappend)
     ]
 
-cancellativeLaw_cancellation_prefix
-    :: (Eq a, Cancellative a) => a -> a -> Property
-cancellativeLaw_cancellation_prefix a b = makeProperty
-    "(a <> b) </> a == Just b"
-    ((a <> b) </> a == Just b)
+rightReductiveLaw_isSuffix_mappend
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_isSuffix_mappend a b = makeProperty
+    "b `isSuffixOf` (a <> b)"
+    (b `isSuffixOf` (a <> b))
 
-cancellativeLaw_cancellation_suffix
-    :: (Eq a, Cancellative a) => a -> a -> Property
-cancellativeLaw_cancellation_suffix a b = makeProperty
-    "(a <> b) </> b == Just a"
-    ((a <> b) </> b == Just a)
+rightReductiveLaw_isSuffix_stripSuffix
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_isSuffix_stripSuffix a b = makeProperty
+    "isSuffixOf a b == isJust (stripSuffix a b)"
+    (isSuffixOf a b == isJust (stripSuffix a b))
 
---------------------------------------------------------------------------------
--- OverlappingGCDMonoid
---------------------------------------------------------------------------------
+rightReductiveLaw_stripSuffix
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_stripSuffix a b = makeProperty
+    "maybe b (<> a) (stripSuffix a b) == b"
+    (maybe b (<> a) (stripSuffix a b) == b)
 
-overlappingGCDMonoidLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, OverlappingGCDMonoid a)
-    => Proxy a
-    -> Laws
-overlappingGCDMonoidLaws _ = Laws "OverlappingGCDMonoid"
-    [ makeLaw2 @a
-        "overlappingGCDMonoidLaw_overlap_stripPrefixOverlap"
-        (overlappingGCDMonoidLaw_overlap_stripPrefixOverlap)
-    , makeLaw2 @a
-        "overlappingGCDMonoidLaw_overlap_stripSuffixOverlap"
-        (overlappingGCDMonoidLaw_overlap_stripSuffixOverlap)
-    , makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripOverlap_overlap"
-        (overlappingGCDMonoidLaw_stripOverlap_overlap)
-    , makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap"
-        (overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap)
-    , makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap"
-        (overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap)
-    ]
-
-overlappingGCDMonoidLaw_overlap_stripPrefixOverlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_overlap_stripPrefixOverlap a b = makeProperty
-    "overlap a b <> stripPrefixOverlap a b == b"
-    (overlap a b <> stripPrefixOverlap a b == b)
-
-overlappingGCDMonoidLaw_overlap_stripSuffixOverlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_overlap_stripSuffixOverlap a b = makeProperty
-    "stripSuffixOverlap b a <> overlap a b == a"
-    (stripSuffixOverlap b a <> overlap a b == a)
-
-overlappingGCDMonoidLaw_stripOverlap_overlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripOverlap_overlap a b = makeProperty
-    "(λ(_, x, _) -> x) (stripOverlap a b) == overlap a b"
-    ((\(_, x, _) -> x) (stripOverlap a b) == overlap a b)
-
-overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap a b = makeProperty
-    "(λ(_, _, x) -> x) (stripOverlap a b) == stripPrefixOverlap a b"
-    ((\(_, _, x) -> x) (stripOverlap a b) == stripPrefixOverlap a b)
-
-overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b = makeProperty
-    "(λ(x, _, _) -> x) (stripOverlap a b) == stripSuffixOverlap b a"
-    ((\(x, _, _) -> x) (stripOverlap a b) == stripSuffixOverlap b a)
-
---------------------------------------------------------------------------------
--- Monus
---------------------------------------------------------------------------------
-
-monusLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, Monus a)
-    => Proxy a
-    -> Laws
-monusLaws _ = Laws "Monus"
-    [ makeLaw2 @a
-        "monusLaw_stripPrefixOverlap"
-        (monusLaw_stripPrefixOverlap)
-    , makeLaw2 @a
-        "monusLaw_stripPrefixOverlap_mappend"
-        (monusLaw_stripPrefixOverlap_mappend)
-    , makeLaw2 @a
-        "monusLaw_stripSuffixOverlap"
-        (monusLaw_stripSuffixOverlap)
-    , makeLaw2 @a
-        "monusLaw_stripSuffixOverlap_mappend"
-        (monusLaw_stripSuffixOverlap_mappend)
-    ]
-
-monusLaw_stripPrefixOverlap
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripPrefixOverlap a b = makeProperty
-    "a <\\> b == stripPrefixOverlap b a"
-    (a <\\> b == stripPrefixOverlap b a)
-  where
-    (<\\>) = (<\>)
-
-monusLaw_stripPrefixOverlap_mappend
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripPrefixOverlap_mappend a b = makeProperty
-    "(b <> a) <\\> b == stripPrefixOverlap b (b <> a)"
-    ((b <> a) <\\> b == stripPrefixOverlap b (b <> a))
-  where
-    (<\\>) = (<\>)
-
-monusLaw_stripSuffixOverlap
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripSuffixOverlap a b = makeProperty
-    "a <\\> b == stripSuffixOverlap b a"
-    (a <\\> b == stripSuffixOverlap b a)
-  where
-    (<\\>) = (<\>)
-
-monusLaw_stripSuffixOverlap_mappend
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripSuffixOverlap_mappend a b = makeProperty
-    "(a <> b) <\\> b == stripSuffixOverlap b (a <> b)"
-    ((a <> b) <\\> b == stripSuffixOverlap b (a <> b))
-  where
-    (<\\>) = (<\>)
-
---------------------------------------------------------------------------------
--- MonoidNull
---------------------------------------------------------------------------------
-
-monoidNullLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, MonoidNull a)
-    => Proxy a
-    -> Laws
-monoidNullLaws _ = Laws "MonoidNull"
-    [ makeLaw1 @a
-        "monoidNullLaw_basic"
-        (monoidNullLaw_basic)
-    ]
-
-monoidNullLaw_basic
-    :: (Eq a, MonoidNull a) => a -> Property
-monoidNullLaw_basic a = makeProperty
-    "null a == (a == mempty)"
-    (null a == (a == mempty))
+rightReductiveLaw_stripSuffix_mappend
+    :: (Eq a, RightReductive a) => a -> a -> Property
+rightReductiveLaw_stripSuffix_mappend a b = makeProperty
+    "fmap (<> b) (stripSuffix b (a <> b)) == Just (a <> b)"
+    (fmap (<> b) (stripSuffix b (a <> b)) == Just (a <> b))
 
 --------------------------------------------------------------------------------
 -- Utilities

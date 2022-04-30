@@ -37,9 +37,9 @@ import Test.QuickCheck.Monoid.Subclasses
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
+    , reductiveLaws
     , rightCancellativeLaws
     , rightReductiveLaws
-    , reductiveLaws
     )
 
 spec :: Spec
