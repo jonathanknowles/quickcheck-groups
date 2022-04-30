@@ -33,12 +33,14 @@ import Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
     , leftCancellativeLaws
+    , leftGCDMonoidLaws
     , leftReductiveLaws
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
+    , rightGCDMonoidLaws
     , rightReductiveLaws
     )
 
@@ -48,44 +50,54 @@ spec = do
     parallel $ describe "Lawfulness of type class instances" $ do
         testLawsMany @ByteString
             [ leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , overlappingGCDMonoidLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @Text
             [ leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , overlappingGCDMonoidLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @[Int]
             [ leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , overlappingGCDMonoidLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @(Set Int)
             [ commutativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @(Set Natural)
             [ commutativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @(Product Int)
@@ -97,11 +109,13 @@ spec = do
             ]
         testLawsMany @(Product Natural)
             [ commutativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]
         testLawsMany @(Sum Int)
@@ -118,11 +132,13 @@ spec = do
             [ cancellativeLaws
             , commutativeLaws
             , leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             ]

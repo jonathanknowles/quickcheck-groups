@@ -16,12 +16,14 @@ module Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
     , leftCancellativeLaws
+    , leftGCDMonoidLaws
     , leftReductiveLaws
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
+    , rightGCDMonoidLaws
     , rightReductiveLaws
     )
     where
@@ -34,7 +36,7 @@ import Data.Function
 import Data.Maybe
     ( isJust )
 import Data.Monoid.Cancellative
-    ( OverlappingGCDMonoid (..) )
+    ( LeftGCDMonoid (..), OverlappingGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -130,6 +132,107 @@ leftCancellativeLaw_cancellation
 leftCancellativeLaw_cancellation a b = makeProperty
     "stripPrefix a (a <> b) == Just b"
     (stripPrefix a (a <> b) == Just b)
+
+--------------------------------------------------------------------------------
+-- LeftGCDMonoid
+--------------------------------------------------------------------------------
+
+leftGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, LeftGCDMonoid a)
+    => Proxy a
+    -> Laws
+leftGCDMonoidLaws _ = Laws "LeftGCDMonoid"
+    [ makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_cancellation_1"
+        (leftGCDMonoidLaw_stripCommonPrefix_cancellation_1)
+    , makeLaw3 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_cancellation_1_mappend"
+        (leftGCDMonoidLaw_stripCommonPrefix_cancellation_1_mappend)
+    , makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_cancellation_2"
+        (leftGCDMonoidLaw_stripCommonPrefix_cancellation_2)
+    , makeLaw3 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_cancellation_2_mappend"
+        (leftGCDMonoidLaw_stripCommonPrefix_cancellation_2_mappend)
+    , makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_commonPrefix"
+        (leftGCDMonoidLaw_stripCommonPrefix_commonPrefix)
+    , makeLaw3 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_commonPrefix_mappend"
+        (leftGCDMonoidLaw_stripCommonPrefix_commonPrefix_mappend)
+    , makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1"
+        (leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1)
+    , makeLaw3 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1_mappend"
+        (leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1_mappend)
+    , makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2"
+        (leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2)
+    , makeLaw2 @a
+        "leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2_mappend"
+        (leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2_mappend)
+    ]
+
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_1
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_1 a b = makeProperty
+    "stripCommonPrefix a b & λ(p,x,_) -> p<>x == a"
+    (stripCommonPrefix a b & \(p,x,_) -> p<>x == a)
+
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_1_mappend
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_1_mappend a b c = makeProperty
+    "stripCommonPrefix (a<>b) (a<>c) & λ(p,x,_) -> p<>x == a<>b"
+    (stripCommonPrefix (a<>b) (a<>c) & \(p,x,_) -> p<>x == a<>b)
+
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_2
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_2 a b = makeProperty
+    "stripCommonPrefix a b & λ(p,_,x) -> p<>x == b"
+    (stripCommonPrefix a b & \(p,_,x) -> p<>x == b)
+
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_2_mappend
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_cancellation_2_mappend a b c = makeProperty
+    "stripCommonPrefix (a<>b) (a<>c) & λ(p,_,x) -> p<>x == a<>c"
+    (stripCommonPrefix (a<>b) (a<>c) & \(p,_,x) -> p<>x == a<>c)
+
+leftGCDMonoidLaw_stripCommonPrefix_commonPrefix
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_commonPrefix a b = makeProperty
+    "stripCommonPrefix a b & λ(p,_,_) -> p == commonPrefix a b"
+    (stripCommonPrefix a b & \(p,_,_) -> p == commonPrefix a b)
+
+leftGCDMonoidLaw_stripCommonPrefix_commonPrefix_mappend
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_commonPrefix_mappend a b c = makeProperty
+    "stripCommonPrefix (a<>b) (a<>c) & λ(p,_,_) -> p == commonPrefix (a<>b) (a<>c)"
+    (stripCommonPrefix (a<>b) (a<>c) & \(p,_,_) -> p == commonPrefix (a<>b) (a<>c))
+
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1 a b = makeProperty
+    "stripCommonPrefix a b & λ(p,x,_) -> Just x == stripPrefix p a"
+    (stripCommonPrefix a b & \(p,x,_) -> Just x == stripPrefix p a)
+
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1_mappend
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1_mappend a b c = makeProperty
+    "stripCommonPrefix (a<>b) (a<>c) & λ(p,x,_) -> Just x == stripPrefix p (a<>b)"
+    (stripCommonPrefix (a<>b) (a<>c) & \(p,x,_) -> Just x == stripPrefix p (a<>b))
+
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2 a b = makeProperty
+    "stripCommonPrefix a b & λ(p,_,x) -> Just x == stripPrefix p b"
+    (stripCommonPrefix a b & \(p,_,x) -> Just x == stripPrefix p b)
+
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2_mappend
+    :: (Eq a, LeftGCDMonoid a) => a -> a -> a -> Property
+leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2_mappend a b c = makeProperty
+    "stripCommonPrefix (a<>b) (a<>c) & λ(p,_,x) -> Just x == stripPrefix p (a<>c)"
+    (stripCommonPrefix (a<>b) (a<>c) & \(p,_,x) -> Just x == stripPrefix p (a<>c))
 
 --------------------------------------------------------------------------------
 -- LeftReductive
@@ -413,6 +516,107 @@ rightCancellativeLaw_cancellation a b = makeProperty
     (stripSuffix b (a <> b) == Just a)
 
 --------------------------------------------------------------------------------
+-- RightGCDMonoid
+--------------------------------------------------------------------------------
+
+rightGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, RightGCDMonoid a)
+    => Proxy a
+    -> Laws
+rightGCDMonoidLaws _ = Laws "RightGCDMonoid"
+    [ makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_cancellation_1"
+        (rightGCDMonoidLaw_stripCommonSuffix_cancellation_1)
+    , makeLaw3 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_cancellation_1_mappend"
+        (rightGCDMonoidLaw_stripCommonSuffix_cancellation_1_mappend)
+    , makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_cancellation_2"
+        (rightGCDMonoidLaw_stripCommonSuffix_cancellation_2)
+    , makeLaw3 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_cancellation_2_mappend"
+        (rightGCDMonoidLaw_stripCommonSuffix_cancellation_2_mappend)
+    , makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_commonSuffix"
+        (rightGCDMonoidLaw_stripCommonSuffix_commonSuffix)
+    , makeLaw3 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_commonSuffix_mappend"
+        (rightGCDMonoidLaw_stripCommonSuffix_commonSuffix_mappend)
+    , makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1"
+        (rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1)
+    , makeLaw3 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1_mappend"
+        (rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1_mappend)
+    , makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2"
+        (rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2)
+    , makeLaw2 @a
+        "rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2_mappend"
+        (rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2_mappend)
+    ]
+
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_1
+    :: (Eq a, RightGCDMonoid a) => a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_1 a b = makeProperty
+    "stripCommonSuffix a b & λ(x,_,s) -> x<>s == a"
+    (stripCommonSuffix a b & \(x,_,s) -> x<>s == a)
+
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_1_mappend
+    :: (Eq a, RightGCDMonoid a) => a -> a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_1_mappend a b c = makeProperty
+    "stripCommonSuffix (a<>c) (b<>c) & λ(x,_,s) -> x<>s == a<>c"
+    (stripCommonSuffix (a<>c) (b<>c) & \(x,_,s) -> x<>s == a<>c)
+
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_2
+    :: (Eq a, RightGCDMonoid a) => a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_2 a b = makeProperty
+    "stripCommonSuffix a b & λ(_,x,s) -> x<>s == b"
+    (stripCommonSuffix a b & \(_,x,s) -> x<>s == b)
+
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_2_mappend
+    :: (Eq a, RightGCDMonoid a) => a -> a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_cancellation_2_mappend a b c = makeProperty
+    "stripCommonSuffix (a<>c) (b<>c) & λ(_,x,s) -> x<>s == b<>c"
+    (stripCommonSuffix (a<>c) (b<>c) & \(_,x,s) -> x<>s == b<>c)
+
+rightGCDMonoidLaw_stripCommonSuffix_commonSuffix
+    :: (Eq a, RightGCDMonoid a) => a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_commonSuffix a b = makeProperty
+    "stripCommonSuffix a b & λ(_,_,s) -> s == commonSuffix a b"
+    (stripCommonSuffix a b & \(_,_,s) -> s == commonSuffix a b)
+
+rightGCDMonoidLaw_stripCommonSuffix_commonSuffix_mappend
+    :: (Eq a, RightGCDMonoid a) => a -> a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_commonSuffix_mappend a b c = makeProperty
+    "stripCommonSuffix (a<>c) (b<>c) & λ(_,_,s) -> s == commonSuffix (a<>c) (b<>c)"
+    (stripCommonSuffix (a<>c) (b<>c) & \(_,_,s) -> s == commonSuffix (a<>c) (b<>c))
+
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1
+    :: (Eq a, RightGCDMonoid a) => a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1 a b = makeProperty
+    "stripCommonSuffix a b & λ(x,_,s) -> Just x == stripSuffix s a"
+    (stripCommonSuffix a b & \(x,_,s) -> Just x == stripSuffix s a)
+
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1_mappend
+    :: (Eq a, RightGCDMonoid a) => a -> a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1_mappend a b c = makeProperty
+    "stripCommonSuffix (a<>c) (b<>c) & λ(x,_,s) -> Just x == stripSuffix s (a<>c)"
+    (stripCommonSuffix (a<>c) (b<>c) & \(x,_,s) -> Just x == stripSuffix s (a<>c))
+
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2
+    :: (Eq a, RightGCDMonoid a) => a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2 a b = makeProperty
+    "stripCommonSuffix a b & λ(_,x,s) -> Just x == stripSuffix s b"
+    (stripCommonSuffix a b & \(_,x,s) -> Just x == stripSuffix s b)
+
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2_mappend
+    :: (Eq a, RightGCDMonoid a) => a -> a -> a -> Property
+rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2_mappend a b c = makeProperty
+    "stripCommonSuffix (a<>c) (b<>c) & λ(_,x,s) -> Just x == stripSuffix s (b<>c)"
+    (stripCommonSuffix (a<>c) (b<>c) & \(_,x,s) -> Just x == stripSuffix s (b<>c))
+
+--------------------------------------------------------------------------------
 -- RightReductive
 --------------------------------------------------------------------------------
 
@@ -480,6 +684,13 @@ makeLaw2
     -> (String, Property)
 makeLaw2 s = makeLaw s . makeProperty2
 
+makeLaw3
+    :: (Arbitrary a, Show a, Eq a, Testable t)
+    => String
+    -> (a -> a -> a -> t)
+    -> (String, Property)
+makeLaw3 s = makeLaw s . makeProperty3
+
 makeProperty :: Testable t => String -> t -> Property
 makeProperty propertyDescription t =
     property t & counterexample counterexampleText
@@ -490,14 +701,24 @@ makeProperty propertyDescription t =
         , propertyDescription
         ]
 
-makeProperty1 :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
+makeProperty1
+    :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
 makeProperty1 p a
     = cover  0.1 (a == mempty) "a == mempty"
     $ cover 20.0 (a /= mempty) "a /= mempty"
     $ property $ p a
 
-makeProperty2 :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
+makeProperty2
+    :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
 makeProperty2 p a b
     = cover  0.1 (a == b) "a == b"
     $ cover 20.0 (a /= b) "a /= b"
     $ property $ p a b
+
+makeProperty3
+    :: (Eq a, Testable t) => (a -> a -> a -> t) -> (a -> a -> a -> Property)
+makeProperty3 p a b c
+    = cover 20.0
+        (a /= b && b /= c && c /= a)
+        "a /= b && b /= c && c /= a"
+    $ property $ p a b c
