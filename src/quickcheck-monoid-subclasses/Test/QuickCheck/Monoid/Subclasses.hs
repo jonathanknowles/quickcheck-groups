@@ -15,6 +15,7 @@
 module Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
+    , gcdMonoidLaws
     , leftCancellativeLaws
     , leftGCDMonoidLaws
     , leftReductiveLaws
@@ -29,7 +30,7 @@ module Test.QuickCheck.Monoid.Subclasses
     where
 
 import Prelude hiding
-    ( null )
+    ( gcd, null )
 
 import Data.Function
     ( (&) )
@@ -37,6 +38,8 @@ import Data.Maybe
     ( isJust )
 import Data.Monoid.Cancellative
     ( LeftGCDMonoid (..), OverlappingGCDMonoid (..), RightGCDMonoid (..) )
+import Data.Monoid.GCD
+    ( GCDMonoid (..) )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -112,6 +115,89 @@ commutativeLaw_basic
 commutativeLaw_basic a b = makeProperty
     "a <> b == b <> a"
     (a <> b == b <> a)
+
+--------------------------------------------------------------------------------
+-- GCDMonoid
+--------------------------------------------------------------------------------
+
+gcdMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, GCDMonoid a)
+    => Proxy a
+    -> Laws
+gcdMonoidLaws _ = Laws "GCDMonoid"
+    [ makeLaw2 @a
+        "gcdMonoidLaw_gcd_commonPrefix"
+        (gcdMonoidLaw_gcd_commonPrefix)
+    , makeLaw3 @a
+        "gcdMonoidLaw_gcd_commonPrefix_mconcat"
+        (gcdMonoidLaw_gcd_commonPrefix_mconcat)
+    , makeLaw2 @a
+        "gcdMonoidLaw_gcd_commonSuffix"
+        (gcdMonoidLaw_gcd_commonSuffix)
+    , makeLaw3 @a
+        "gcdMonoidLaw_gcd_commonSuffix_mconcat"
+        (gcdMonoidLaw_gcd_commonSuffix_mconcat)
+    , makeLaw2 @a
+        "gcdMonoidLaw_gcd_reduction_1"
+        (gcdMonoidLaw_gcd_reduction_1)
+    , makeLaw3 @a
+        "gcdMonoidLaw_gcd_reduction_1_mconcat"
+        (gcdMonoidLaw_gcd_reduction_1_mconcat)
+    , makeLaw2 @a
+        "gcdMonoidLaw_gcd_reduction_2"
+        (gcdMonoidLaw_gcd_reduction_2)
+    , makeLaw3 @a
+        "gcdMonoidLaw_gcd_reduction_2_mconcat"
+        (gcdMonoidLaw_gcd_reduction_2_mconcat)
+    ]
+
+gcdMonoidLaw_gcd_commonPrefix
+    :: (Eq a, GCDMonoid a) => a -> a -> Property
+gcdMonoidLaw_gcd_commonPrefix a b = makeProperty
+    "gcd a b == commonPrefix a b"
+    (gcd a b == commonPrefix a b)
+
+gcdMonoidLaw_gcd_commonPrefix_mconcat
+    :: (Eq a, GCDMonoid a) => a -> a -> a -> Property
+gcdMonoidLaw_gcd_commonPrefix_mconcat a b c = makeProperty
+    "gcd (a <> b) (a <> c) == commonPrefix (a <> b) (a <> c)"
+    (gcd (a <> b) (a <> c) == commonPrefix (a <> b) (a <> c))
+
+gcdMonoidLaw_gcd_commonSuffix
+    :: (Eq a, GCDMonoid a) => a -> a -> Property
+gcdMonoidLaw_gcd_commonSuffix a b = makeProperty
+    "gcd a b == commonSuffix a b"
+    (gcd a b == commonSuffix a b)
+
+gcdMonoidLaw_gcd_commonSuffix_mconcat
+    :: (Eq a, GCDMonoid a) => a -> a -> a -> Property
+gcdMonoidLaw_gcd_commonSuffix_mconcat a b c = makeProperty
+    "gcd (a <> c) (b <> c) == commonSuffix (a <> c) (b <> c)"
+    (gcd (a <> c) (b <> c) == commonSuffix (a <> c) (b <> c))
+
+gcdMonoidLaw_gcd_reduction_1
+    :: (Eq a, GCDMonoid a) => a -> a -> Property
+gcdMonoidLaw_gcd_reduction_1 a b = makeProperty
+    "isJust (a </> gcd a b)"
+    (isJust (a </> gcd a b))
+
+gcdMonoidLaw_gcd_reduction_1_mconcat
+    :: (Eq a, GCDMonoid a) => a -> a -> a -> Property
+gcdMonoidLaw_gcd_reduction_1_mconcat a b c = makeProperty
+    "isJust ((a <> b) </> gcd (a <> b) (a <> c))"
+    (isJust ((a <> b) </> gcd (a <> b) (a <> c)))
+
+gcdMonoidLaw_gcd_reduction_2
+    :: (Eq a, GCDMonoid a) => a -> a -> Property
+gcdMonoidLaw_gcd_reduction_2 a b = makeProperty
+    "isJust (b </> gcd a b)"
+    (isJust (b </> gcd a b))
+
+gcdMonoidLaw_gcd_reduction_2_mconcat
+    :: (Eq a, GCDMonoid a) => a -> a -> a -> Property
+gcdMonoidLaw_gcd_reduction_2_mconcat a b c = makeProperty
+    "isJust ((a <> c) </> gcd (a <> b) (a <> c))"
+    (isJust ((a <> c) </> gcd (a <> b) (a <> c)))
 
 --------------------------------------------------------------------------------
 -- LeftCancellative
