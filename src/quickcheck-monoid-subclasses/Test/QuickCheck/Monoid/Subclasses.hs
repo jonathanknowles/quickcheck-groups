@@ -319,34 +319,46 @@ overlappingGCDMonoidLaws
     -> Laws
 overlappingGCDMonoidLaws _ = Laws "OverlappingGCDMonoid"
     [ makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripOverlap"
-        (overlappingGCDMonoidLaw_stripOverlap)
+        "overlappingGCDMonoidLaw_overlap_stripPrefixOverlap"
+        (overlappingGCDMonoidLaw_overlap_stripPrefixOverlap)
     , makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripPrefixOverlap"
-        (overlappingGCDMonoidLaw_stripPrefixOverlap)
+        "overlappingGCDMonoidLaw_overlap_stripSuffixOverlap"
+        (overlappingGCDMonoidLaw_overlap_stripSuffixOverlap)
     , makeLaw2 @a
-        "overlappingGCDMonoidLaw_stripSuffixOverlap"
-        (overlappingGCDMonoidLaw_stripSuffixOverlap)
+        "overlappingGCDMonoidLaw_stripOverlap_overlap"
+        (overlappingGCDMonoidLaw_stripOverlap_overlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap"
+        (overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap)
+    , makeLaw2 @a
+        "overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap"
+        (overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap)
     ]
 
-overlappingGCDMonoidLaw_stripOverlap
+overlappingGCDMonoidLaw_overlap_stripPrefixOverlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripOverlap a b = property $
-    stripOverlap a b ==
-        ( stripSuffixOverlap b a
-        , overlap a b
-        , stripPrefixOverlap a b
-        )
-
-overlappingGCDMonoidLaw_stripPrefixOverlap
-    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripPrefixOverlap a b = property $
+overlappingGCDMonoidLaw_overlap_stripPrefixOverlap a b = property $
     overlap a b <> stripPrefixOverlap a b == b
 
-overlappingGCDMonoidLaw_stripSuffixOverlap
+overlappingGCDMonoidLaw_overlap_stripSuffixOverlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
-overlappingGCDMonoidLaw_stripSuffixOverlap a b = property $
+overlappingGCDMonoidLaw_overlap_stripSuffixOverlap a b = property $
     stripSuffixOverlap b a <> overlap a b == a
+
+overlappingGCDMonoidLaw_stripOverlap_overlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_overlap a b = property $
+    (\(_, x, _) -> x) (stripOverlap a b) == overlap a b
+
+overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap a b = property $
+    (\(_, _, x) -> x) (stripOverlap a b) == stripPrefixOverlap a b
+
+overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap
+    :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
+overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b = property $
+    (\(x, _, _) -> x) (stripOverlap a b) == stripSuffixOverlap b a
 
 --------------------------------------------------------------------------------
 -- Monus
