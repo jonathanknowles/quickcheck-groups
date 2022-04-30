@@ -55,7 +55,6 @@ import Test.QuickCheck
     , checkCoverage
     , cover
     , property
-    , (==>)
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
@@ -207,9 +206,8 @@ reductiveLaw_equivalence_prefix a b = property $
 
 reductiveLaw_equivalence_prefix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_prefix_mappend a b =
-    isJust (stripPrefix a (a <> b))
-    ==> reductiveLaw_equivalence_prefix a (a <> b)
+reductiveLaw_equivalence_prefix_mappend a b = property $
+    (b <> a) </> b == stripPrefix b (b <> a)
 
 reductiveLaw_equivalence_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
@@ -218,9 +216,8 @@ reductiveLaw_equivalence_suffix a b = property $
 
 reductiveLaw_equivalence_suffix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_suffix_mappend a b =
-    isJust (stripSuffix b (a <> b))
-    ==> reductiveLaw_equivalence_suffix b (a <> b)
+reductiveLaw_equivalence_suffix_mappend a b = property $
+    (a <> b) </> b == stripSuffix b (a <> b)
 
 reductiveLaw_inversion_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
@@ -229,9 +226,8 @@ reductiveLaw_inversion_prefix a b = property $
 
 reductiveLaw_inversion_prefix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_prefix_mappend a b =
-    isJust ((a <> b) </> a)
-    ==> reductiveLaw_inversion_prefix (a <> b) a
+reductiveLaw_inversion_prefix_mappend a b = property $
+    fmap (b <>) ((b <> a) </> b) == Just (b <> a)
 
 reductiveLaw_inversion_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
@@ -240,9 +236,8 @@ reductiveLaw_inversion_suffix a b = property $
 
 reductiveLaw_inversion_suffix_mappend
     :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_suffix_mappend a b =
-    isJust ((a <> b) </> a)
-    ==> reductiveLaw_inversion_suffix (a <> b) a
+reductiveLaw_inversion_suffix_mappend a b = property $
+    fmap (<> b) ((a <> b) </> b) == Just (a <> b)
 
 --------------------------------------------------------------------------------
 -- LeftCancellative
