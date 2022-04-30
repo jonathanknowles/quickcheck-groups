@@ -13,7 +13,8 @@
 -- Please note that this module is experimental.
 --
 module Test.QuickCheck.Monoid.Subclasses
-    ( cancellativeLaws
+    ( cancellativeGCDMonoidLaws
+    , cancellativeLaws
     , commutativeLaws
     , gcdMonoidLaws
     , leftCancellativeLaws
@@ -66,6 +67,35 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
+
+--------------------------------------------------------------------------------
+-- CancellativeGCDMonoid
+--------------------------------------------------------------------------------
+
+cancellativeGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a, GCDMonoid a)
+    => Proxy a
+    -> Laws
+cancellativeGCDMonoidLaws _ = Laws "CancellativeGCDMonoid"
+    [ makeLaw3 @a
+        "cancellativeGCDMonoidLaw_prefix"
+        (cancellativeGCDMonoidLaw_prefix)
+    , makeLaw3 @a
+        "cancellativeGCDMonoidLaw_suffix"
+        (cancellativeGCDMonoidLaw_suffix)
+    ]
+
+cancellativeGCDMonoidLaw_prefix
+    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
+cancellativeGCDMonoidLaw_prefix a b c = makeProperty
+    "gcd (a <> b) (a <> c) == a <> gcd b c"
+    (gcd (a <> b) (a <> c) == a <> gcd b c)
+
+cancellativeGCDMonoidLaw_suffix
+    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
+cancellativeGCDMonoidLaw_suffix a b c = makeProperty
+    "gcd (a <> c) (b <> c) == gcd a b <> c"
+    (gcd (a <> c) (b <> c) == gcd a b <> c)
 
 --------------------------------------------------------------------------------
 -- Cancellative

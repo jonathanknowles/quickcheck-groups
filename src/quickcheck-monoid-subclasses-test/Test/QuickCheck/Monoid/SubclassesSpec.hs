@@ -30,7 +30,8 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Instances.Text
     ()
 import Test.QuickCheck.Monoid.Subclasses
-    ( cancellativeLaws
+    ( cancellativeGCDMonoidLaws
+    , cancellativeLaws
     , commutativeLaws
     , gcdMonoidLaws
     , leftCancellativeLaws
@@ -133,7 +134,8 @@ spec = do
             , rightReductiveLaws
             ]
         testLawsMany @(Sum Natural)
-            [ cancellativeLaws
+            [ cancellativeGCDMonoidLaws
+            , cancellativeLaws
             , commutativeLaws
             , gcdMonoidLaws
             , leftCancellativeLaws
