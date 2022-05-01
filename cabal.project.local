@@ -1,3 +1,6 @@
 ignore-project: False
 tests: True
-test-show-details: direct
+documentation: True
+
+package *
+  documentation: True

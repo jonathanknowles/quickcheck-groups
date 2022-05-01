@@ -8,25 +8,47 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
--- QuickCheck support for testing instances of Monoidal classes.
+-- This module provides:
 --
--- Please note that this module is experimental.
+-- * Support for testing 'Semigroup' subclass instances with QuickCheck.
+-- * Reusable properties in the form of 'Laws' definitions.
+--
+-- In general:
+--
+-- * Each 'Laws' definition includes properties that relate to __just one__
+--   __class__.
+-- * Laws for superclasses are __not__ transitively included.
+--
+-- Therefore, when testing laws for a particular class, you should make sure to
+-- also test laws for all superclasses.
 --
 module Test.QuickCheck.Classes.Semigroup
-    ( cancellativeGCDMonoidLaws
-    , cancellativeLaws
-    , commutativeLaws
-    , gcdMonoidLaws
-    , leftCancellativeLaws
-    , leftGCDMonoidLaws
-    , leftReductiveLaws
-    , monoidNullLaws
-    , monusLaws
-    , overlappingGCDMonoidLaws
+    (
+    -- * Commutative
+      commutativeLaws
+
+    -- * Reductive
     , reductiveLaws
-    , rightCancellativeLaws
-    , rightGCDMonoidLaws
+    , leftReductiveLaws
     , rightReductiveLaws
+
+    -- * Cancellative
+    , cancellativeLaws
+    , leftCancellativeLaws
+    , rightCancellativeLaws
+
+    -- * GCD
+    , gcdMonoidLaws
+    , leftGCDMonoidLaws
+    , rightGCDMonoidLaws
+    , overlappingGCDMonoidLaws
+    , cancellativeGCDMonoidLaws
+
+    -- * Monus
+    , monusLaws
+
+    -- * Null
+    , monoidNullLaws
     )
     where
 
@@ -72,6 +94,18 @@ import Test.QuickCheck.Classes
 -- CancellativeGCDMonoid
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'Cancellative' and 'GCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> gcd (a <> b) (a <> c) == a <> gcd b c
+-- prop> gcd (a <> c) (b <> c) == gcd a b <> c
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'cancellativeLaws'
+-- * 'gcdMonoidLaws'
+--
 cancellativeGCDMonoidLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a, GCDMonoid a)
     => Proxy a
@@ -101,6 +135,19 @@ cancellativeGCDMonoidLaw_suffix a b c = makeProperty
 -- Cancellative
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'Cancellative'.
+--
+-- Tests the following properties:
+--
+-- prop> (a <> b) </> a == Just b
+-- prop> (a <> b) </> b == Just a
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'leftCancellativeLaws'
+-- * 'rightCancellativeLaws'
+-- * 'reductiveLaws'
+--
 cancellativeLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a)
     => Proxy a
@@ -130,6 +177,12 @@ cancellativeLaw_cancellation_suffix a b = makeProperty
 -- Commutative
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'Commutative'.
+--
+-- Tests the following property:
+--
+-- prop> a <> b == b <> a
+--
 commutativeLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Commutative a)
     => Proxy a
@@ -150,6 +203,23 @@ commutativeLaw_basic a b = makeProperty
 -- GCDMonoid
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'GCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> gcd a b == commonPrefix a b
+-- prop> gcd a b == commonSuffix a b
+-- prop> isJust (a </> gcd a b)
+-- prop> isJust (b </> gcd a b)
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'commutativeLaws'
+-- * 'reductiveLaws'
+-- * 'leftGCDMonoidLaws'
+-- * 'rightGCDMonoidLaws'
+-- * 'overlappingGCDMonoidLaws'
+--
 gcdMonoidLaws
     :: forall a. (Arbitrary a, Show a, Eq a, GCDMonoid a)
     => Proxy a
@@ -233,6 +303,16 @@ gcdMonoidLaw_gcd_reduction_2_mconcat a b c = makeProperty
 -- LeftCancellative
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'LeftCancellative'.
+--
+-- Tests the following property:
+--
+-- prop> stripPrefix a (a <> b) == Just b
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'leftReductiveLaws'
+--
 leftCancellativeLaws
     :: forall a. (Arbitrary a, Show a, Eq a, LeftCancellative a)
     => Proxy a
@@ -253,6 +333,20 @@ leftCancellativeLaw_cancellation a b = makeProperty
 -- LeftGCDMonoid
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'LeftGCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> stripCommonPrefix a b & \(p, _, _) -> p == commonPrefix a b
+-- prop> stripCommonPrefix a b & \(p, x, _) -> p <> x == a
+-- prop> stripCommonPrefix a b & \(p, _, x) -> p <> x == b
+-- prop> stripCommonPrefix a b & \(p, x, _) -> Just x == stripPrefix p a
+-- prop> stripCommonPrefix a b & \(p, _, x) -> Just x == stripPrefix p b
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'leftReductiveLaws'
+--
 leftGCDMonoidLaws
     :: forall a. (Arbitrary a, Show a, Eq a, LeftGCDMonoid a)
     => Proxy a
@@ -354,6 +448,14 @@ leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2_mappend a b c = makeProperty
 -- LeftReductive
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'LeftReductive'.
+--
+-- Tests the following properties:
+--
+-- prop> a `isPrefixOf` (a <> b)
+-- prop> isPrefixOf a b == isJust (stripPrefix a b)
+-- prop> maybe b (a <>) (stripPrefix a b) == b
+--
 leftReductiveLaws
     :: forall a. (Arbitrary a, Show a, Eq a, LeftReductive a)
     => Proxy a
@@ -401,6 +503,12 @@ leftReductiveLaw_stripPrefix_mappend a b = makeProperty
 -- MonoidNull
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'MonoidNull'.
+--
+-- Tests the following property:
+--
+-- prop> null a == (a == mempty)
+--
 monoidNullLaws
     :: forall a. (Arbitrary a, Show a, Eq a, MonoidNull a)
     => Proxy a
@@ -421,6 +529,18 @@ monoidNullLaw_basic a = makeProperty
 -- Monus
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'Monus'.
+--
+-- Tests the following properties:
+--
+-- prop> a <\> b == stripPrefixOverlap b a
+-- prop> a <\> b == stripSuffixOverlap b a
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'commutativeLaws'
+-- * 'overlappingGCDMonoidLaws'
+--
 monusLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Monus a)
     => Proxy a
@@ -476,6 +596,21 @@ monusLaw_stripSuffixOverlap_mappend a b = makeProperty
 -- OverlappingGCDMonoid
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'OverlappingGCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> overlap a b <> stripPrefixOverlap a b == b
+-- prop> stripSuffixOverlap b a <> overlap a b == a
+-- prop> stripOverlap a b & \(_, x, _) -> x == overlap a b
+-- prop> stripOverlap a b & \(_, _, x) -> x == stripPrefixOverlap a b
+-- prop> stripOverlap a b & \(x, _, _) -> x == stripSuffixOverlap b a
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'leftReductiveLaws'
+-- * 'rightReductiveLaws'
+--
 overlappingGCDMonoidLaws
     :: forall a. (Arbitrary a, Show a, Eq a, OverlappingGCDMonoid a)
     => Proxy a
@@ -579,6 +714,21 @@ overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap_mconcat a b c =
 -- Reductive
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'Reductive'.
+--
+-- Tests the following properties:
+--
+-- prop> a </> b == stripPrefix b a
+-- prop> a </> b == stripSuffix b a
+-- prop> maybe a (b <>) (a </> b) == a
+-- prop> maybe a (<> b) (a </> b) == a
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'commutativeLaws'
+-- * 'leftReductiveLaws'
+-- * 'rightReductiveLaws'
+--
 reductiveLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Reductive a)
     => Proxy a
@@ -662,6 +812,16 @@ reductiveLaw_inversion_suffix_mappend a b = makeProperty
 -- RightCancellative
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'RightCancellative'.
+--
+-- Tests the following property:
+--
+-- prop> stripSuffix b (a <> b) == Just a
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'rightReductiveLaws'
+--
 rightCancellativeLaws
     :: forall a. (Arbitrary a, Show a, Eq a, RightCancellative a)
     => Proxy a
@@ -682,6 +842,20 @@ rightCancellativeLaw_cancellation a b = makeProperty
 -- RightGCDMonoid
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'RightGCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> stripCommonSuffix a b & \(_, _, s) -> s == commonSuffix a b
+-- prop> stripCommonSuffix a b & \(x, _, s) -> x <> s == a
+-- prop> stripCommonSuffix a b & \(_, x, s) -> x <> s == b
+-- prop> stripCommonSuffix a b & \(x, _, s) -> Just x == stripSuffix s a
+-- prop> stripCommonSuffix a b & \(_, x, s) -> Just x == stripSuffix s b
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'rightReductiveLaws'
+--
 rightGCDMonoidLaws
     :: forall a. (Arbitrary a, Show a, Eq a, RightGCDMonoid a)
     => Proxy a
@@ -783,6 +957,14 @@ rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2_mappend a b c = makeProperty
 -- RightReductive
 --------------------------------------------------------------------------------
 
+-- | 'Laws' for instances of 'RightReductive'.
+--
+-- Tests the following properties:
+--
+-- prop> b `isSuffixOf` (a <> b)
+-- prop> isSuffixOf a b == isJust (stripSuffix a b)
+-- prop> maybe b (<> a) (stripSuffix a b) == b
+--
 rightReductiveLaws
     :: forall a. (Arbitrary a, Show a, Eq a, RightReductive a)
     => Proxy a
