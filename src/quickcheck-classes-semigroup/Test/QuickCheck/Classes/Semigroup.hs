@@ -8,11 +8,11 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
--- QuickCheck support for testing instances of Monoid subclasses.
+-- QuickCheck support for testing instances of Monoidal classes.
 --
 -- Please note that this module is experimental.
 --
-module Test.QuickCheck.Monoid.Subclasses
+module Test.QuickCheck.Classes.Semigroup
     ( cancellativeGCDMonoidLaws
     , cancellativeLaws
     , commutativeLaws

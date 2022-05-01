@@ -1,29 +1,29 @@
 cabal-version:  3.0
-name:           quickcheck-monoid-subclasses
+name:           quickcheck-classes-semigroup
 version:        0.0.0
-bug-reports:    https://github.com/jonathanknowles/quickcheck-monoid-subclasses/issues
+bug-reports:    https://github.com/jonathanknowles/quickcheck-classes-semigroup/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022 Jonathan Knowles
 category:       Testing
-synopsis:       QuickCheck support for Monoid subclasses
+synopsis:       Support for testing Semigroup subclass instances with QuickCheck
 description:
-    QuickCheck support for Monoid subclasses.
+    Support for testing Semigroup subclass instances with QuickCheck.
 
 extra-source-files:
     README.md
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/quickcheck-monoid-subclasses
+    location: https://github.com/jonathanknowles/quickcheck-classes-semigroup
 
 library
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses
+        src/quickcheck-classes-semigroup
     exposed-modules:
-        Test.QuickCheck.Monoid.Subclasses
+        Test.QuickCheck.Classes.Semigroup
     default-language:
         Haskell2010
     build-depends:
@@ -32,14 +32,14 @@ library
       , QuickCheck
       , quickcheck-classes
 
-test-suite quickcheck-monoid-subclasses-test
+test-suite quickcheck-classes-semigroup-test
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses-test
+        src/quickcheck-classes-semigroup-test
     other-modules:
         Test.QuickCheck.Classes.Hspec
-        Test.QuickCheck.Monoid.SubclassesSpec
+        Test.QuickCheck.Classes.SemigroupSpec
     type: exitcode-stdio-1.0
     default-language:
         Haskell2010
@@ -53,6 +53,6 @@ test-suite quickcheck-monoid-subclasses-test
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
+      , quickcheck-classes-semigroup
       , quickcheck-instances
-      , quickcheck-monoid-subclasses
       , text

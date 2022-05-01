@@ -7,7 +7,7 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Monoid.SubclassesSpec where
+module Test.QuickCheck.Classes.SemigroupSpec where
 
 import Data.ByteString.Lazy
     ( ByteString )
@@ -23,13 +23,7 @@ import Test.Hspec
     ( Spec, describe, parallel )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Instances.ByteString
-    ()
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
-import Test.QuickCheck.Monoid.Subclasses
+import Test.QuickCheck.Classes.Semigroup
     ( cancellativeGCDMonoidLaws
     , cancellativeLaws
     , commutativeLaws
@@ -45,6 +39,12 @@ import Test.QuickCheck.Monoid.Subclasses
     , rightGCDMonoidLaws
     , rightReductiveLaws
     )
+import Test.QuickCheck.Instances.ByteString
+    ()
+import Test.QuickCheck.Instances.Natural
+    ()
+import Test.QuickCheck.Instances.Text
+    ()
 
 spec :: Spec
 spec = do
