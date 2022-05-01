@@ -10,7 +10,11 @@ copyright:      2022 Jonathan Knowles
 category:       Testing
 synopsis:       Support for testing Semigroup subclass instances with QuickCheck
 description:
-    Support for testing Semigroup subclass instances with QuickCheck.
+
+    This library provides:
+
+    * Support for testing 'Semigroup' subclass instances with QuickCheck.
+    * Reusable properties in the form of 'Laws' definitions.
 
 extra-source-files:
     README.md

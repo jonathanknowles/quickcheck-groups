@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {- HLINT ignore "Use camelCase" -}
@@ -1044,7 +1045,12 @@ makeProperty propertyDescription t =
         [ mempty
         , "Property not satisfied:"
         , propertyDescription
+            & fmap replaceSpecialChars
         ]
+      where
+        replaceSpecialChars = \case
+            'λ'   -> '\\'
+            other -> other
 
 makeProperty1
     :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
