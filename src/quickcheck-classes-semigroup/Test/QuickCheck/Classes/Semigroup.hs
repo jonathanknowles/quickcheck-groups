@@ -92,47 +92,6 @@ import Test.QuickCheck.Classes
     ( Laws (..) )
 
 --------------------------------------------------------------------------------
--- CancellativeGCDMonoid
---------------------------------------------------------------------------------
-
--- | 'Laws' for instances of 'Cancellative' and 'GCDMonoid'.
---
--- Tests the following properties:
---
--- prop> gcd (a <> b) (a <> c) == a <> gcd b c
--- prop> gcd (a <> c) (b <> c) == gcd a b <> c
---
--- Note that the following superclass laws are __not__ included:
---
--- * 'cancellativeLaws'
--- * 'gcdMonoidLaws'
---
-cancellativeGCDMonoidLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a, GCDMonoid a)
-    => Proxy a
-    -> Laws
-cancellativeGCDMonoidLaws _ = Laws "CancellativeGCDMonoid"
-    [ makeLaw3 @a
-        "cancellativeGCDMonoidLaw_prefix"
-        (cancellativeGCDMonoidLaw_prefix)
-    , makeLaw3 @a
-        "cancellativeGCDMonoidLaw_suffix"
-        (cancellativeGCDMonoidLaw_suffix)
-    ]
-
-cancellativeGCDMonoidLaw_prefix
-    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
-cancellativeGCDMonoidLaw_prefix a b c = makeProperty
-    "gcd (a <> b) (a <> c) == a <> gcd b c"
-    (gcd (a <> b) (a <> c) == a <> gcd b c)
-
-cancellativeGCDMonoidLaw_suffix
-    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
-cancellativeGCDMonoidLaw_suffix a b c = makeProperty
-    "gcd (a <> c) (b <> c) == gcd a b <> c"
-    (gcd (a <> c) (b <> c) == gcd a b <> c)
-
---------------------------------------------------------------------------------
 -- Cancellative
 --------------------------------------------------------------------------------
 
@@ -173,6 +132,47 @@ cancellativeLaw_cancellation_suffix
 cancellativeLaw_cancellation_suffix a b = makeProperty
     "(a <> b) </> b == Just a"
     ((a <> b) </> b == Just a)
+
+--------------------------------------------------------------------------------
+-- CancellativeGCDMonoid
+--------------------------------------------------------------------------------
+
+-- | 'Laws' for instances of 'Cancellative' and 'GCDMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> gcd (a <> b) (a <> c) == a <> gcd b c
+-- prop> gcd (a <> c) (b <> c) == gcd a b <> c
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'cancellativeLaws'
+-- * 'gcdMonoidLaws'
+--
+cancellativeGCDMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Cancellative a, GCDMonoid a)
+    => Proxy a
+    -> Laws
+cancellativeGCDMonoidLaws _ = Laws "CancellativeGCDMonoid"
+    [ makeLaw3 @a
+        "cancellativeGCDMonoidLaw_prefix"
+        (cancellativeGCDMonoidLaw_prefix)
+    , makeLaw3 @a
+        "cancellativeGCDMonoidLaw_suffix"
+        (cancellativeGCDMonoidLaw_suffix)
+    ]
+
+cancellativeGCDMonoidLaw_prefix
+    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
+cancellativeGCDMonoidLaw_prefix a b c = makeProperty
+    "gcd (a <> b) (a <> c) == a <> gcd b c"
+    (gcd (a <> b) (a <> c) == a <> gcd b c)
+
+cancellativeGCDMonoidLaw_suffix
+    :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
+cancellativeGCDMonoidLaw_suffix a b c = makeProperty
+    "gcd (a <> c) (b <> c) == gcd a b <> c"
+    (gcd (a <> c) (b <> c) == gcd a b <> c)
 
 --------------------------------------------------------------------------------
 -- Commutative
