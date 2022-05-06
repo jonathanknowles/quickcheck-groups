@@ -1,7 +1,10 @@
+{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ViewPatterns #-}
 {- HLINT ignore "Use camelCase" -}
 {- HLINT ignore "Redundant bracket" -}
 
@@ -1060,16 +1063,24 @@ makeProperty1 p a
     $ property $ p a
 
 makeProperty2
-    :: (Eq a, Testable t) => (a -> a -> t) -> (a -> a -> Property)
-makeProperty2 p a b
+    :: (Eq a, Testable t) => (a -> a -> t) -> (Tuple2 a -> Property)
+makeProperty2 p (tuple2 -> (a, b))
     = cover  0.1 (a == b) "a == b"
     $ cover 20.0 (a /= b) "a /= b"
     $ property $ p a b
 
 makeProperty3
-    :: (Eq a, Testable t) => (a -> a -> a -> t) -> (a -> a -> a -> Property)
-makeProperty3 p a b c
+    :: (Eq a, Testable t) => (a -> a -> a -> t) -> (Tuple3 a -> Property)
+makeProperty3 p (tuple3 -> (a, b, c))
     = cover 20.0
         (a /= b && b /= c && c /= a)
         "a /= b && b /= c && c /= a"
     $ property $ p a b c
+
+newtype Tuple2 a = Tuple2 {tuple2 :: (a, a)}
+    deriving stock (Eq, Show)
+    deriving newtype Arbitrary
+
+newtype Tuple3 a = Tuple3 {tuple3 :: (a, a, a)}
+    deriving stock (Eq, Show)
+    deriving newtype Arbitrary
