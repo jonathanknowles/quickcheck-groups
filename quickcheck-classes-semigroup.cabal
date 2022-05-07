@@ -66,6 +66,22 @@ library quickcheck-classes-semigroup-internal
       , pretty-show
       , semigroupoids
 
+library quickcheck-classes-semigroup-prelude
+    import:
+        common-extensions
+    hs-source-dirs:
+        src/quickcheck-classes-semigroup-prelude
+    exposed-modules:
+        Test.QuickCheck.Classes.Semigroup.Prelude
+    default-language:
+        Haskell2010
+    build-depends:
+        base >=4.7 && <5
+      , QuickCheck
+      , quickcheck-classes-semigroup
+      , quickcheck-classes-semigroup-internal
+      , quickcheck-instances
+
 test-suite quickcheck-classes-semigroup-test
     import:
         common-extensions
