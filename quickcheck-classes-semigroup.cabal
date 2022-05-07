@@ -19,11 +19,25 @@ description:
 extra-source-files:
     README.md
 
+common common-extensions
+    default-extensions:
+        DerivingStrategies
+        FlexibleContexts
+        FlexibleInstances
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        PolyKinds
+        ScopedTypeVariables
+        TypeApplications
+        ViewPatterns
+
 source-repository head
     type: git
     location: https://github.com/jonathanknowles/quickcheck-classes-semigroup
 
 library
+    import:
+        common-extensions
     hs-source-dirs:
         src/quickcheck-classes-semigroup
     exposed-modules:
@@ -37,6 +51,8 @@ library
       , quickcheck-classes
 
 test-suite quickcheck-classes-semigroup-test
+    import:
+        common-extensions
     main-is:
         Spec.hs
     hs-source-dirs:
