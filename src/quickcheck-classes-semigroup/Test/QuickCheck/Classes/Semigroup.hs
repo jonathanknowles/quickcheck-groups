@@ -386,9 +386,6 @@ leftReductiveLaws _ = Laws "LeftReductive"
     , makeLaw2 @a
         "leftReductiveLaw_stripPrefix"
         (leftReductiveLaw_stripPrefix)
-    , makeLaw2 @a
-        "leftReductiveLaw_stripPrefix_mappend"
-        (leftReductiveLaw_stripPrefix_mappend)
     ]
 
 leftReductiveLaw_isPrefix_mappend
@@ -408,12 +405,6 @@ leftReductiveLaw_stripPrefix
 leftReductiveLaw_stripPrefix a b = makeProperty
     "maybe b (a <>) (stripPrefix a b) == b"
     (maybe b (a <>) (stripPrefix a b) == b)
-
-leftReductiveLaw_stripPrefix_mappend
-    :: (Eq a, LeftReductive a) => a -> a -> Property
-leftReductiveLaw_stripPrefix_mappend a b = makeProperty
-    "fmap (a <>) (stripPrefix a (a <> b)) == Just (a <> b)"
-    (fmap (a <>) (stripPrefix a (a <> b)) == Just (a <> b))
 
 --------------------------------------------------------------------------------
 -- MonoidNull
