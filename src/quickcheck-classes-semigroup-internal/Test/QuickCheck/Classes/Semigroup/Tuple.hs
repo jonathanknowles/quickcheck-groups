@@ -3,11 +3,6 @@
 -- License: Apache-2.0
 --
 module Test.QuickCheck.Classes.Semigroup.Tuple
-    ( Tuple2
-    , evalTuple2
-    , Tuple3
-    , evalTuple3
-    )
     where
 
 import Data.List.NonEmpty
