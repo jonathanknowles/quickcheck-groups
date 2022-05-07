@@ -457,14 +457,8 @@ monusLaws _ = Laws "Monus"
         "monusLaw_stripPrefixOverlap"
         (monusLaw_stripPrefixOverlap)
     , makeLaw2 @a
-        "monusLaw_stripPrefixOverlap_mappend"
-        (monusLaw_stripPrefixOverlap_mappend)
-    , makeLaw2 @a
         "monusLaw_stripSuffixOverlap"
         (monusLaw_stripSuffixOverlap)
-    , makeLaw2 @a
-        "monusLaw_stripSuffixOverlap_mappend"
-        (monusLaw_stripSuffixOverlap_mappend)
     ]
 
 monusLaw_stripPrefixOverlap
@@ -475,27 +469,11 @@ monusLaw_stripPrefixOverlap a b = makeProperty
   where
     (<\\>) = (<\>)
 
-monusLaw_stripPrefixOverlap_mappend
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripPrefixOverlap_mappend a b = makeProperty
-    "(b <> a) <\\> b == stripPrefixOverlap b (b <> a)"
-    ((b <> a) <\\> b == stripPrefixOverlap b (b <> a))
-  where
-    (<\\>) = (<\>)
-
 monusLaw_stripSuffixOverlap
     :: (Eq a, Monus a) => a -> a -> Property
 monusLaw_stripSuffixOverlap a b = makeProperty
     "a <\\> b == stripSuffixOverlap b a"
     (a <\\> b == stripSuffixOverlap b a)
-  where
-    (<\\>) = (<\>)
-
-monusLaw_stripSuffixOverlap_mappend
-    :: (Eq a, Monus a) => a -> a -> Property
-monusLaw_stripSuffixOverlap_mappend a b = makeProperty
-    "(a <> b) <\\> b == stripSuffixOverlap b (a <> b)"
-    ((a <> b) <\\> b == stripSuffixOverlap b (a <> b))
   where
     (<\\>) = (<\>)
 
