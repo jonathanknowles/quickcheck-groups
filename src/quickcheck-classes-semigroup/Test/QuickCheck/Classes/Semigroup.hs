@@ -576,26 +576,14 @@ reductiveLaws _ = Laws "Reductive"
         "reductiveLaw_equivalence_prefix"
         (reductiveLaw_equivalence_prefix)
     , makeLaw2 @a
-        "reductiveLaw_equivalence_prefix_mappend"
-        (reductiveLaw_equivalence_prefix_mappend)
-    , makeLaw2 @a
         "reductiveLaw_equivalence_suffix"
         (reductiveLaw_equivalence_suffix)
-    , makeLaw2 @a
-        "reductiveLaw_equivalence_suffix_mappend"
-        (reductiveLaw_equivalence_suffix_mappend)
     , makeLaw2 @a
         "reductiveLaw_inversion_prefix"
         (reductiveLaw_inversion_prefix)
     , makeLaw2 @a
-        "reductiveLaw_inversion_prefix_mappend"
-        (reductiveLaw_inversion_prefix_mappend)
-    , makeLaw2 @a
         "reductiveLaw_inversion_suffix"
         (reductiveLaw_inversion_suffix)
-    , makeLaw2 @a
-        "reductiveLaw_inversion_suffix_mappend"
-        (reductiveLaw_inversion_suffix_mappend)
     ]
 
 reductiveLaw_equivalence_prefix
@@ -604,23 +592,11 @@ reductiveLaw_equivalence_prefix a b = makeProperty
     "a </> b == stripPrefix b a"
     (a </> b == stripPrefix b a)
 
-reductiveLaw_equivalence_prefix_mappend
-    :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_prefix_mappend a b = makeProperty
-    "(b <> a) </> b == stripPrefix b (b <> a)"
-    ((b <> a) </> b == stripPrefix b (b <> a))
-
 reductiveLaw_equivalence_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_equivalence_suffix a b = makeProperty
     "a </> b == stripSuffix b a"
     (a </> b == stripSuffix b a)
-
-reductiveLaw_equivalence_suffix_mappend
-    :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_equivalence_suffix_mappend a b = makeProperty
-    "(a <> b) </> b == stripSuffix b (a <> b)"
-    ((a <> b) </> b == stripSuffix b (a <> b))
 
 reductiveLaw_inversion_prefix
     :: (Eq a, Reductive a) => a -> a -> Property
@@ -628,23 +604,11 @@ reductiveLaw_inversion_prefix a b = makeProperty
     "maybe a (b <>) (a </> b) == a"
     (maybe a (b <>) (a </> b) == a)
 
-reductiveLaw_inversion_prefix_mappend
-    :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_prefix_mappend a b = makeProperty
-    "fmap (b <>) ((b <> a) </> b) == Just (b <> a)"
-    (fmap (b <>) ((b <> a) </> b) == Just (b <> a))
-
 reductiveLaw_inversion_suffix
     :: (Eq a, Reductive a) => a -> a -> Property
 reductiveLaw_inversion_suffix a b = makeProperty
     "maybe a (<> b) (a </> b) == a"
     (maybe a (<> b) (a </> b) == a)
-
-reductiveLaw_inversion_suffix_mappend
-    :: (Eq a, Reductive a) => a -> a -> Property
-reductiveLaw_inversion_suffix_mappend a b = makeProperty
-    "fmap (<> b) ((a <> b) </> b) == Just (a <> b)"
-    (fmap (<> b) ((a <> b) </> b) == Just (a <> b))
 
 --------------------------------------------------------------------------------
 -- RightCancellative
