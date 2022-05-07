@@ -803,8 +803,8 @@ makeProperty propertyDescription t =
 makeProperty1
     :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
 makeProperty1 p a
-    = cover  0.1 (a == mempty) "a == mempty"
-    $ cover 20.0 (a /= mempty) "a /= mempty"
+    = cover 0 (a == mempty) "a == mempty"
+    $ cover 0 (a /= mempty) "a /= mempty"
     $ property $ p a
 
 makeProperty2
@@ -812,8 +812,8 @@ makeProperty2
     => (a -> a -> t)
     -> (Tuple2 a -> Property)
 makeProperty2 p (evalTuple2 -> (a, b))
-    = cover  0.1 (a == b) "a == b"
-    $ cover 20.0 (a /= b) "a /= b"
+    = cover 0 (a == b) "a == b"
+    $ cover 0 (a /= b) "a /= b"
     $ property $ p a b
 
 makeProperty3
@@ -821,7 +821,7 @@ makeProperty3
     => (a -> a -> a -> t)
     -> (Tuple3 a -> Property)
 makeProperty3 p (evalTuple3 -> (a, b, c))
-    = cover 20.0
+    = cover 0
         (a /= b && b /= c && c /= a)
         "a /= b && b /= c && c /= a"
     $ property $ p a b c

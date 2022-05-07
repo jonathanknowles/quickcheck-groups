@@ -45,6 +45,22 @@ import Test.QuickCheck.Instances.Text
 
 spec :: Spec
 spec = do
+    testLawsMany @()
+        [ cancellativeGCDMonoidLaws
+        , cancellativeLaws
+        , commutativeLaws
+        , gcdMonoidLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        ]
     testLawsMany @ByteString
         [ leftCancellativeLaws
         , leftGCDMonoidLaws
