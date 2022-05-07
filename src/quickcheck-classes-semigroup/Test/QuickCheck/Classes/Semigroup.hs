@@ -333,32 +333,32 @@ leftGCDMonoidLaws _ = Laws "LeftGCDMonoid"
 leftGCDMonoidLaw_stripCommonPrefix_commonPrefix
     :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
 leftGCDMonoidLaw_stripCommonPrefix_commonPrefix a b = makeProperty
-    "stripCommonPrefix a b & λ(p,_,_) -> p == commonPrefix a b"
-    (stripCommonPrefix a b & \(p,_,_) -> p == commonPrefix a b)
+    "stripCommonPrefix a b & λ(p, _, _) -> p == commonPrefix a b"
+    (stripCommonPrefix a b & \(p, _, _) -> p == commonPrefix a b)
 
 leftGCDMonoidLaw_stripCommonPrefix_mappend_1
     :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
 leftGCDMonoidLaw_stripCommonPrefix_mappend_1 a b = makeProperty
-    "stripCommonPrefix a b & λ(p,x,_) -> p<>x == a"
-    (stripCommonPrefix a b & \(p,x,_) -> p<>x == a)
+    "stripCommonPrefix a b & λ(p, x, _) -> p <> x == a"
+    (stripCommonPrefix a b & \(p, x, _) -> p <> x == a)
 
 leftGCDMonoidLaw_stripCommonPrefix_mappend_2
     :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
 leftGCDMonoidLaw_stripCommonPrefix_mappend_2 a b = makeProperty
-    "stripCommonPrefix a b & λ(p,_,x) -> p<>x == b"
-    (stripCommonPrefix a b & \(p,_,x) -> p<>x == b)
+    "stripCommonPrefix a b & λ(p, _, x) -> p <> x == b"
+    (stripCommonPrefix a b & \(p, _, x) -> p <> x == b)
 
 leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1
     :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
 leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_1 a b = makeProperty
-    "stripCommonPrefix a b & λ(p,x,_) -> Just x == stripPrefix p a"
-    (stripCommonPrefix a b & \(p,x,_) -> Just x == stripPrefix p a)
+    "stripCommonPrefix a b & λ(p, x, _) -> Just x == stripPrefix p a"
+    (stripCommonPrefix a b & \(p, x, _) -> Just x == stripPrefix p a)
 
 leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2
     :: (Eq a, LeftGCDMonoid a) => a -> a -> Property
 leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2 a b = makeProperty
-    "stripCommonPrefix a b & λ(p,_,x) -> Just x == stripPrefix p b"
-    (stripCommonPrefix a b & \(p,_,x) -> Just x == stripPrefix p b)
+    "stripCommonPrefix a b & λ(p, _, x) -> Just x == stripPrefix p b"
+    (stripCommonPrefix a b & \(p, _, x) -> Just x == stripPrefix p b)
 
 --------------------------------------------------------------------------------
 -- LeftReductive
@@ -533,20 +533,20 @@ overlappingGCDMonoidLaw_overlap_stripSuffixOverlap a b = makeProperty
 overlappingGCDMonoidLaw_stripOverlap_overlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
 overlappingGCDMonoidLaw_stripOverlap_overlap a b = makeProperty
-    "stripOverlap a b & λ(_,x,_) -> x == overlap a b"
-    (stripOverlap a b & \(_,x,_) -> x == overlap a b)
+    "stripOverlap a b & λ(_, x, _) -> x == overlap a b"
+    (stripOverlap a b & \(_, x, _) -> x == overlap a b)
 
 overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
 overlappingGCDMonoidLaw_stripOverlap_stripPrefixOverlap a b = makeProperty
-    "stripOverlap a b & λ(_,_,x) -> x == stripPrefixOverlap a b"
-    (stripOverlap a b & \(_,_,x) -> x == stripPrefixOverlap a b)
+    "stripOverlap a b & λ(_, _, x) -> x == stripPrefixOverlap a b"
+    (stripOverlap a b & \(_, _, x) -> x == stripPrefixOverlap a b)
 
 overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap
     :: (Eq a, OverlappingGCDMonoid a) => a -> a -> Property
 overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b = makeProperty
-    "stripOverlap a b & λ(x,_,_) -> x == stripSuffixOverlap b a"
-    (stripOverlap a b & \(x,_,_) -> x == stripSuffixOverlap b a)
+    "stripOverlap a b & λ(x, _, _) -> x == stripSuffixOverlap b a"
+    (stripOverlap a b & \(x, _, _) -> x == stripSuffixOverlap b a)
 
 --------------------------------------------------------------------------------
 -- Reductive
@@ -683,32 +683,32 @@ rightGCDMonoidLaws _ = Laws "RightGCDMonoid"
 rightGCDMonoidLaw_stripCommonSuffix_commonSuffix
     :: (Eq a, RightGCDMonoid a) => a -> a -> Property
 rightGCDMonoidLaw_stripCommonSuffix_commonSuffix a b = makeProperty
-    "stripCommonSuffix a b & λ(_,_,s) -> s == commonSuffix a b"
-    (stripCommonSuffix a b & \(_,_,s) -> s == commonSuffix a b)
+    "stripCommonSuffix a b & λ(_, _, s) -> s == commonSuffix a b"
+    (stripCommonSuffix a b & \(_, _, s) -> s == commonSuffix a b)
 
 rightGCDMonoidLaw_stripCommonSuffix_mappend_1
     :: (Eq a, RightGCDMonoid a) => a -> a -> Property
 rightGCDMonoidLaw_stripCommonSuffix_mappend_1 a b = makeProperty
-    "stripCommonSuffix a b & λ(x,_,s) -> x<>s == a"
-    (stripCommonSuffix a b & \(x,_,s) -> x<>s == a)
+    "stripCommonSuffix a b & λ(x, _, s) -> x <> s == a"
+    (stripCommonSuffix a b & \(x, _, s) -> x <> s == a)
 
 rightGCDMonoidLaw_stripCommonSuffix_mappend_2
     :: (Eq a, RightGCDMonoid a) => a -> a -> Property
 rightGCDMonoidLaw_stripCommonSuffix_mappend_2 a b = makeProperty
-    "stripCommonSuffix a b & λ(_,x,s) -> x<>s == b"
-    (stripCommonSuffix a b & \(_,x,s) -> x<>s == b)
+    "stripCommonSuffix a b & λ(_, x, s) -> x <> s == b"
+    (stripCommonSuffix a b & \(_, x, s) -> x <> s == b)
 
 rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1
     :: (Eq a, RightGCDMonoid a) => a -> a -> Property
 rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_1 a b = makeProperty
-    "stripCommonSuffix a b & λ(x,_,s) -> Just x == stripSuffix s a"
-    (stripCommonSuffix a b & \(x,_,s) -> Just x == stripSuffix s a)
+    "stripCommonSuffix a b & λ(x, _, s) -> Just x == stripSuffix s a"
+    (stripCommonSuffix a b & \(x, _, s) -> Just x == stripSuffix s a)
 
 rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2
     :: (Eq a, RightGCDMonoid a) => a -> a -> Property
 rightGCDMonoidLaw_stripCommonSuffix_stripSuffix_2 a b = makeProperty
-    "stripCommonSuffix a b & λ(_,x,s) -> Just x == stripSuffix s b"
-    (stripCommonSuffix a b & \(_,x,s) -> Just x == stripSuffix s b)
+    "stripCommonSuffix a b & λ(_, x, s) -> Just x == stripSuffix s b"
+    (stripCommonSuffix a b & \(_, x, s) -> Just x == stripSuffix s b)
 
 --------------------------------------------------------------------------------
 -- RightReductive
