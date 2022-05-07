@@ -77,6 +77,7 @@ library quickcheck-classes-semigroup-prelude
         Haskell2010
     build-depends:
         base >=4.7 && <5
+      , monoid-subclasses
       , QuickCheck
       , quickcheck-classes-semigroup
       , quickcheck-classes-semigroup-internal
