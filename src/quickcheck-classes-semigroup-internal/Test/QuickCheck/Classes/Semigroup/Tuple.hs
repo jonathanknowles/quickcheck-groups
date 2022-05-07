@@ -52,6 +52,10 @@ evalCombination3 :: (s, s, s) -> Combination3 -> NonEmpty s
 evalCombination3 tuple (Combination3 selectors) =
     evalTupleLens3 tuple <$> selectors
 
+showCombination3 :: Show s => (s, s, s) -> Combination3 -> String
+showCombination3 tuple =
+    F1.intercalateMap1 " <> " show . evalCombination3 tuple
+
 --------------------------------------------------------------------------------
 -- Semigroup tuples
 --------------------------------------------------------------------------------
