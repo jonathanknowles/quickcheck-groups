@@ -86,6 +86,8 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
+import Test.QuickCheck.Classes.Semigroup.Tuple
+    ( Tuple2, Tuple3, evalTuple2, evalTuple3 )
 
 --------------------------------------------------------------------------------
 -- Cancellative
@@ -764,21 +766,21 @@ makeLaw :: Testable t => String -> t -> (String, Property)
 makeLaw title t = (title, checkCoverage $ property t)
 
 makeLaw1
-    :: (Arbitrary a, Show a, Eq a, Monoid a)
+    :: (Arbitrary a, Show a, Eq a, Semigroup a, Monoid a)
     => String
     -> (a -> Property)
     -> (String, Property)
 makeLaw1 s = makeLaw s . makeProperty1
 
 makeLaw2
-    :: (Arbitrary a, Show a, Eq a, Testable t)
+    :: (Arbitrary a, Show a, Eq a, Semigroup a, Testable t)
     => String
     -> (a -> a -> t)
     -> (String, Property)
 makeLaw2 s = makeLaw s . makeProperty2
 
 makeLaw3
-    :: (Arbitrary a, Show a, Eq a, Testable t)
+    :: (Arbitrary a, Show a, Eq a, Semigroup a, Testable t)
     => String
     -> (a -> a -> a -> t)
     -> (String, Property)
@@ -789,8 +791,7 @@ makeProperty propertyDescription t =
     property t & counterexample counterexampleText
   where
     counterexampleText = unlines
-        [ mempty
-        , "Property not satisfied:"
+        [ "Property not satisfied:"
         , propertyDescription
             & fmap replaceSpecialChars
         ]
@@ -807,24 +808,20 @@ makeProperty1 p a
     $ property $ p a
 
 makeProperty2
-    :: (Eq a, Testable t) => (a -> a -> t) -> (Tuple2 a -> Property)
-makeProperty2 p (tuple2 -> (a, b))
+    :: (Eq a, Semigroup a, Testable t)
+    => (a -> a -> t)
+    -> (Tuple2 a -> Property)
+makeProperty2 p (evalTuple2 -> (a, b))
     = cover  0.1 (a == b) "a == b"
     $ cover 20.0 (a /= b) "a /= b"
     $ property $ p a b
 
 makeProperty3
-    :: (Eq a, Testable t) => (a -> a -> a -> t) -> (Tuple3 a -> Property)
-makeProperty3 p (tuple3 -> (a, b, c))
+    :: (Eq a, Semigroup a, Testable t)
+    => (a -> a -> a -> t)
+    -> (Tuple3 a -> Property)
+makeProperty3 p (evalTuple3 -> (a, b, c))
     = cover 20.0
         (a /= b && b /= c && c /= a)
         "a /= b && b /= c && c /= a"
     $ property $ p a b c
-
-newtype Tuple2 a = Tuple2 {tuple2 :: (a, a)}
-    deriving stock (Eq, Show)
-    deriving newtype Arbitrary
-
-newtype Tuple3 a = Tuple3 {tuple3 :: (a, a, a)}
-    deriving stock (Eq, Show)
-    deriving newtype Arbitrary

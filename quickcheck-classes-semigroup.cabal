@@ -49,6 +49,22 @@ library
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
+      , quickcheck-classes-semigroup-internal
+
+library quickcheck-classes-semigroup-internal
+    import:
+        common-extensions
+    hs-source-dirs:
+        src/quickcheck-classes-semigroup-internal
+    exposed-modules:
+        Test.QuickCheck.Classes.Semigroup.Tuple
+    default-language:
+        Haskell2010
+    build-depends:
+        base >=4.7 && <5
+      , QuickCheck
+      , pretty-show
+      , semigroupoids
 
 test-suite quickcheck-classes-semigroup-test
     import:
