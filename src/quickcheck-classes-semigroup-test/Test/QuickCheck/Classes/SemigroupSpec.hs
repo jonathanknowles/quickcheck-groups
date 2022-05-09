@@ -31,6 +31,7 @@ import Test.QuickCheck.Classes.Semigroup
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
+    , positiveMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
     , rightGCDMonoidLaws
@@ -56,6 +57,7 @@ spec = do
         , monoidNullLaws
         , monusLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , reductiveLaws
         , rightCancellativeLaws
         , rightGCDMonoidLaws
@@ -67,6 +69,7 @@ spec = do
         , leftReductiveLaws
         , monoidNullLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , rightCancellativeLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -77,6 +80,7 @@ spec = do
         , leftReductiveLaws
         , monoidNullLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , rightCancellativeLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -87,6 +91,7 @@ spec = do
         , leftReductiveLaws
         , monoidNullLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , rightCancellativeLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -99,6 +104,7 @@ spec = do
         , monoidNullLaws
         , monusLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , reductiveLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -111,6 +117,7 @@ spec = do
         , monoidNullLaws
         , monusLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , reductiveLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -130,6 +137,7 @@ spec = do
         , monoidNullLaws
         , monusLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , reductiveLaws
         , rightGCDMonoidLaws
         , rightReductiveLaws
@@ -155,6 +163,7 @@ spec = do
         , monoidNullLaws
         , monusLaws
         , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
         , reductiveLaws
         , rightCancellativeLaws
         , rightGCDMonoidLaws

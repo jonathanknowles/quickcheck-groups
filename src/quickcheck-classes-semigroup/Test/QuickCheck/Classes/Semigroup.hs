@@ -46,6 +46,9 @@ module Test.QuickCheck.Classes.Semigroup
 
     -- * Null
     , monoidNullLaws
+
+    -- * Positive
+    , positiveMonoidLaws
     )
     where
 
@@ -63,7 +66,7 @@ import Data.Monoid.GCD
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
-    ( MonoidNull (..) )
+    ( MonoidNull (..), PositiveMonoid )
 import Data.Proxy
     ( Proxy )
 import Data.Semigroup.Cancellative
@@ -575,6 +578,37 @@ overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b =
     makeProperty
         "stripOverlap a b & λ(x, _, _) -> x == stripSuffixOverlap b a"
         (stripOverlap a b & \(x, _, _) -> x == stripSuffixOverlap b a)
+
+--------------------------------------------------------------------------------
+-- PositiveMonoid
+--------------------------------------------------------------------------------
+
+-- | 'Laws' for instances of 'PositiveMonoid'.
+--
+-- Tests the following properties:
+--
+-- prop> null (a <> b) == (null a && null b)
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'monoidNullLaws'
+--
+positiveMonoidLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, PositiveMonoid a)
+    => Proxy a
+    -> Laws
+positiveMonoidLaws _ = Laws "PositiveMonoid"
+    [ makeLaw2 @a
+        "positiveMonoidLaw_fundamental"
+        (positiveMonoidLaw_fundamental)
+    ]
+
+positiveMonoidLaw_fundamental
+    :: (Eq a, PositiveMonoid a) => a -> a -> Property
+positiveMonoidLaw_fundamental a b =
+    makeProperty
+        "null (a <> b) == (null a && null b)"
+        (null (a <> b) == (null a && null b))
 
 --------------------------------------------------------------------------------
 -- Reductive
