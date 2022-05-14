@@ -26,4 +26,5 @@ import Numeric.Natural
 import Test.QuickCheck
 import Test.QuickCheck.Classes.Semigroup
 import Test.QuickCheck.Classes.Semigroup.Tuple
-import Test.QuickCheck.Instances.Natural ()
+import Test.QuickCheck.Instances.Natural
+    ()
