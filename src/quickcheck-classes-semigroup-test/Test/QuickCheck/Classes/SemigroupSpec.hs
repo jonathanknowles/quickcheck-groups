@@ -27,6 +27,7 @@ import Test.QuickCheck.Classes.Semigroup
     , cancellativeLaws
     , commutativeLaws
     , gcdMonoidLaws
+    , groupLaws
     , leftCancellativeLaws
     , leftGCDMonoidLaws
     , leftReductiveLaws
@@ -53,6 +54,7 @@ spec = do
         , cancellativeLaws
         , commutativeLaws
         , gcdMonoidLaws
+        , groupLaws
         , leftCancellativeLaws
         , leftGCDMonoidLaws
         , leftReductiveLaws
@@ -147,6 +149,7 @@ spec = do
     testLawsMany @(Sum Int)
         [ cancellativeLaws
         , commutativeLaws
+        , groupLaws
         , leftCancellativeLaws
         , leftReductiveLaws
         , monoidNullLaws

@@ -46,6 +46,7 @@ library
         Haskell2010
     build-depends:
         base >=4.7 && <5
+      , groups
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
@@ -77,6 +78,7 @@ library quickcheck-classes-semigroup-prelude
         Haskell2010
     build-depends:
         base >=4.7 && <5
+      , groups
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes-semigroup
@@ -102,6 +104,7 @@ test-suite quickcheck-classes-semigroup-test
         base >=4.7 && <5
       , bytestring
       , containers
+      , groups
       , hspec
       , monoid-subclasses
       , QuickCheck

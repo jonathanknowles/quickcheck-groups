@@ -49,6 +49,9 @@ module Test.QuickCheck.Classes.Semigroup
 
     -- * Positive
     , positiveMonoidLaws
+
+    -- * Group
+    , groupLaws
     )
     where
 
@@ -57,6 +60,8 @@ import Prelude hiding
 
 import Data.Function
     ( (&) )
+import Data.Group
+    ( Group (..) )
 import Data.Maybe
     ( isJust )
 import Data.Monoid.Cancellative
@@ -80,11 +85,14 @@ import Data.Semigroup.Cancellative
     )
 import Test.QuickCheck
     ( Arbitrary (..)
+    , NonNegative (..)
+    , NonPositive (..)
     , Property
     , Testable
     , checkCoverage
     , counterexample
     , cover
+    , forAllShrink
     , property
     )
 import Test.QuickCheck.Classes
@@ -273,6 +281,79 @@ gcdMonoidLaw_gcd_reduction_2 a b =
     makeProperty
         "isJust (b </> gcd a b)"
         (isJust (b </> gcd a b))
+
+--------------------------------------------------------------------------------
+-- Group
+--------------------------------------------------------------------------------
+
+-- | 'Laws' for instances of 'Group'.
+--
+-- Tests the following properties:
+--
+-- prop> a <> invert a == mempty
+-- prop> invert a <> a == mempty
+-- prop> a ~~ b == a <> invert b
+-- prop> n >= 0 ==> pow a n == mconcat (replicate n a)
+-- prop> n <= 0 ==> pow a n == invert (mconcat (replicate (abs n) a))
+--
+groupLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Group a)
+    => Proxy a
+    -> Laws
+groupLaws _ = Laws "Group"
+    [ makeLaw1 @a
+        "groupLaw_invert_1"
+        (groupLaw_invert_1)
+    , makeLaw1 @a
+        "groupLaw_invert_2"
+        (groupLaw_invert_2)
+    , makeLaw2 @a
+        "groupLaw_subtract"
+        (groupLaw_subtract)
+    , makeLaw1 @a
+        "groupLaw_pow_nonNegative"
+        (groupLaw_pow_nonNegative)
+    , makeLaw1 @a
+        "groupLaw_pow_nonPositive"
+        (groupLaw_pow_nonPositive)
+    ]
+
+groupLaw_invert_1
+    :: (Eq a, Group a) => a -> Property
+groupLaw_invert_1 a =
+    makeProperty
+        "a <> invert a == mempty"
+        (a <> invert a == mempty)
+
+groupLaw_invert_2
+    :: (Eq a, Group a) => a -> Property
+groupLaw_invert_2 a =
+    makeProperty
+        "invert a <> a == mempty"
+        (invert a <> a == mempty)
+
+groupLaw_subtract
+    :: (Eq a, Group a) => a -> a -> Property
+groupLaw_subtract a b =
+    makeProperty
+        "a ~~ b == a <> invert b"
+        (a ~~ b == a <> invert b)
+
+groupLaw_pow_nonNegative
+    :: (Eq a, Group a) => a -> Property
+groupLaw_pow_nonNegative a =
+    forAllShrink (arbitrary @(NonNegative Int)) shrink $ \(NonNegative n) ->
+    makeProperty
+        "pow a n == mconcat (replicate n a)"
+        (pow a n == mconcat (replicate n a))
+
+groupLaw_pow_nonPositive
+    :: (Eq a, Group a) => a -> Property
+groupLaw_pow_nonPositive a =
+    forAllShrink (arbitrary @(NonPositive Int)) shrink $ \(NonPositive n) ->
+    makeProperty
+        "pow a n == invert (mconcat (replicate (abs n) a))"
+        (pow a n == invert (mconcat (replicate (abs n) a)))
 
 --------------------------------------------------------------------------------
 -- LeftCancellative

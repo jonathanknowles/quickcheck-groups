@@ -3,7 +3,8 @@
 -- License: Apache-2.0
 --
 module Test.QuickCheck.Classes.Semigroup.Prelude
-    ( module Data.Monoid
+    ( module Data.Group
+    , module Data.Monoid
     , module Data.Monoid.Cancellative
     , module Data.Monoid.GCD
     , module Data.Monoid.Monus
@@ -16,6 +17,7 @@ module Test.QuickCheck.Classes.Semigroup.Prelude
     )
     where
 
+import Data.Group
 import Data.Monoid
 import Data.Monoid.Cancellative
 import Data.Monoid.GCD
