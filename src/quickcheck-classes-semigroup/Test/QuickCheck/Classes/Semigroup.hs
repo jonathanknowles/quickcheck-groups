@@ -73,7 +73,7 @@ import Data.Monoid.Monus
 import Data.Monoid.Null
     ( MonoidNull (..), PositiveMonoid )
 import Data.Proxy
-    ( Proxy )
+    ( Proxy (..) )
 import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
@@ -290,8 +290,11 @@ gcdMonoidLaw_gcd_reduction_2 a b =
 --
 -- Tests the following properties:
 --
+-- prop> invert mempty == mempty
 -- prop> a <> invert a == mempty
 -- prop> invert a <> a == mempty
+-- prop> a ~~ mempty == a
+-- prop> a ~~ a == mempty
 -- prop> a ~~ b == a <> invert b
 -- prop> n >= 0 ==> pow a n == mconcat (replicate n a)
 -- prop> n <= 0 ==> pow a n == invert (mconcat (replicate (abs n) a))
@@ -301,15 +304,24 @@ groupLaws
     => Proxy a
     -> Laws
 groupLaws _ = Laws "Group"
-    [ makeLaw1 @a
-        "groupLaw_invert_1"
-        (groupLaw_invert_1)
+    [ makeLaw0 @a
+        "groupLaw_invert_mempty"
+        (groupLaw_invert_mempty)
     , makeLaw1 @a
-        "groupLaw_invert_2"
-        (groupLaw_invert_2)
+        "groupLaw_invert_mappend_1"
+        (groupLaw_invert_mappend_1)
+    , makeLaw1 @a
+        "groupLaw_invert_mappend_2"
+        (groupLaw_invert_mappend_2)
+    , makeLaw1 @a
+        "groupLaw_subtract_mempty"
+        (groupLaw_subtract_mempty)
+    , makeLaw1 @a
+        "groupLaw_subtract_self"
+        (groupLaw_subtract_self)
     , makeLaw2 @a
-        "groupLaw_subtract"
-        (groupLaw_subtract)
+        "groupLaw_subtract_other"
+        (groupLaw_subtract_other)
     , makeLaw1 @a
         "groupLaw_pow_nonNegative"
         (groupLaw_pow_nonNegative)
@@ -318,23 +330,44 @@ groupLaws _ = Laws "Group"
         (groupLaw_pow_nonPositive)
     ]
 
-groupLaw_invert_1
+groupLaw_invert_mempty
+    :: forall a. (Eq a, Group a) => Proxy a -> Property
+groupLaw_invert_mempty _ =
+    makeProperty
+        "invert (mempty @a) == mempty"
+        (invert (mempty @a) == (mempty @a))
+
+groupLaw_invert_mappend_1
     :: (Eq a, Group a) => a -> Property
-groupLaw_invert_1 a =
+groupLaw_invert_mappend_1 a =
     makeProperty
         "a <> invert a == mempty"
         (a <> invert a == mempty)
 
-groupLaw_invert_2
+groupLaw_invert_mappend_2
     :: (Eq a, Group a) => a -> Property
-groupLaw_invert_2 a =
+groupLaw_invert_mappend_2 a =
     makeProperty
         "invert a <> a == mempty"
         (invert a <> a == mempty)
 
-groupLaw_subtract
+groupLaw_subtract_mempty
+    :: (Eq a, Group a) => a -> Property
+groupLaw_subtract_mempty a =
+    makeProperty
+        "a ~~ mempty == a"
+        (a ~~ mempty == a)
+
+groupLaw_subtract_self
+    :: (Eq a, Group a) => a -> Property
+groupLaw_subtract_self a =
+    makeProperty
+        "a ~~ a == mempty"
+        (a ~~ a == mempty)
+
+groupLaw_subtract_other
     :: (Eq a, Group a) => a -> a -> Property
-groupLaw_subtract a b =
+groupLaw_subtract_other a b =
     makeProperty
         "a ~~ b == a <> invert b"
         (a ~~ b == a <> invert b)
@@ -919,6 +952,13 @@ rightReductiveLaw_stripSuffix a b =
 makeLaw :: Testable t => String -> t -> (String, Property)
 makeLaw title t = (title, checkCoverage $ property t)
 
+makeLaw0
+    :: forall a. (Eq a, Monoid a)
+    => String
+    -> (Proxy a -> Property)
+    -> (String, Property)
+makeLaw0 s = makeLaw s . makeProperty0
+
 makeLaw1
     :: (Arbitrary a, Show a, Eq a, Semigroup a, Monoid a)
     => String
@@ -953,6 +993,12 @@ makeProperty propertyDescription t =
         replaceSpecialChars = \case
             'λ'   -> '\\'
             other -> other
+
+makeProperty0
+    :: forall a t. Testable t
+    => (Proxy a -> t)
+    -> Property
+makeProperty0 p = property $ p $ Proxy @a
 
 makeProperty1
     :: (Eq a, Monoid a, Testable t)
