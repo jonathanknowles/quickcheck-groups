@@ -90,7 +90,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Semigroup.Tuple
-    ( Tuple2, Tuple3, evalTuple2, evalTuple3 )
+    ( Tuple1, Tuple2, Tuple3, evalTuple1, evalTuple2, evalTuple3 )
 
 --------------------------------------------------------------------------------
 -- Cancellative
@@ -874,8 +874,10 @@ makeProperty propertyDescription t =
             other -> other
 
 makeProperty1
-    :: (Eq a, Monoid a, Testable t) => (a -> t) -> (a -> Property)
-makeProperty1 p a
+    :: (Eq a, Monoid a, Testable t)
+    => (a -> t)
+    -> (Tuple1 a -> Property)
+makeProperty1 p (evalTuple1 -> a)
     = cover 0 (a == mempty) "a == mempty"
     $ cover 0 (a /= mempty) "a /= mempty"
     $ property $ p a

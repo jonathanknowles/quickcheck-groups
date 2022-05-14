@@ -1,3 +1,5 @@
+{- HLINT ignore "Redundant bracket" -}
+
 -- |
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
@@ -60,11 +62,18 @@ showCombination3 tuple =
 -- Semigroup tuples
 --------------------------------------------------------------------------------
 
+data Tuple1 s = Tuple1 Combination3 (s, s, s)
+    deriving (Eq, Ord)
+
 data Tuple2 s = Tuple2 Combination3 Combination3 (s, s, s)
     deriving (Eq, Ord)
 
 data Tuple3 s = Tuple3 Combination3 Combination3 Combination3 (s, s, s)
     deriving (Eq, Ord)
+
+instance Arbitrary a => Arbitrary (Tuple1 a) where
+    arbitrary = arbitraryTuple1
+    shrink = shrinkTuple1
 
 instance Arbitrary a => Arbitrary (Tuple2 a) where
     arbitrary = arbitraryTuple2
@@ -74,11 +83,19 @@ instance Arbitrary a => Arbitrary (Tuple3 a) where
     arbitrary = arbitraryTuple3
     shrink = shrinkTuple3
 
+instance (Show s, Semigroup s) => Show (Tuple1 s) where
+    show = showTuple1
+
 instance (Show s, Semigroup s) => Show (Tuple2 s) where
     show = showTuple2
 
 instance (Show s, Semigroup s) => Show (Tuple3 s) where
     show = showTuple3
+
+arbitraryTuple1 :: Arbitrary a => Gen (Tuple1 a)
+arbitraryTuple1 = Tuple1
+    <$> arbitraryCombination3
+    <*> arbitrary
 
 arbitraryTuple2 :: Arbitrary a => Gen (Tuple2 a)
 arbitraryTuple2 = Tuple2
@@ -93,6 +110,11 @@ arbitraryTuple3 = Tuple3
     <*> arbitraryCombination3
     <*> arbitrary
 
+evalTuple1 :: Semigroup s => Tuple1 s -> s
+evalTuple1 (Tuple1 c1 t) =
+    ( F1.fold1 $ evalCombination3 t c1
+    )
+
 evalTuple2 :: Semigroup s => Tuple2 s -> (s, s)
 evalTuple2 (Tuple2 c1 c2 t) =
     ( F1.fold1 $ evalCombination3 t c1
@@ -106,6 +128,11 @@ evalTuple3 (Tuple3 c1 c2 c3 t) =
     , F1.fold1 $ evalCombination3 t c3
     )
 
+showTuple1 :: (Semigroup a, Show a) => Tuple1 a -> String
+showTuple1 (evalTuple1 -> a) = unlines
+    [ mempty, "a:", showWrap a
+    ]
+
 showTuple2 :: (Semigroup a, Show a) => Tuple2 a -> String
 showTuple2 (evalTuple2 -> (a, b)) = unlines
     [ mempty, "a:", showWrap a
@@ -118,6 +145,9 @@ showTuple3 (evalTuple3 -> (a, b, c)) = unlines
     , mempty, "b:", showWrap b
     , mempty, "c:", showWrap c
     ]
+
+shrinkTuple1 :: Arbitrary a => Tuple1 a -> [Tuple1 a]
+shrinkTuple1 (Tuple1 c1 t) = Tuple1 c1 <$> shrink t
 
 shrinkTuple2 :: Arbitrary a => Tuple2 a -> [Tuple2 a]
 shrinkTuple2 (Tuple2 c1 c2 t) = Tuple2 c1 c2 <$> shrink t
