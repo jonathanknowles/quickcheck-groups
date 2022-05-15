@@ -20,6 +20,10 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec )
+import Test.QuickCheck
+    ( Property )
+import Test.QuickCheck.Classes
+    ( Laws (..) )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Semigroup
@@ -46,6 +50,8 @@ import Test.QuickCheck.Instances.Natural
     ()
 import Test.QuickCheck.Instances.Text
     ()
+import Test.QuickCheck.Property
+    ( Result (..), mapTotalResult )
 
 spec :: Spec
 spec = do
@@ -194,3 +200,22 @@ spec = do
         , positiveMonoidLaws
         , rightReductiveLaws
         ]
+
+--------------------------------------------------------------------------------
+-- Coverage checks
+--------------------------------------------------------------------------------
+
+class HasCoverageCheck p where
+    disableCoverageCheck :: p -> p
+
+instance HasCoverageCheck Laws where
+    disableCoverageCheck (Laws title laws) =
+        Laws title $ fmap disableCoverageCheck <$> laws
+
+instance HasCoverageCheck Property where
+    disableCoverageCheck =
+        mapTotalResult (\r -> r {maybeCheckCoverage = Nothing})
+
+instance (Functor f, HasCoverageCheck p) => HasCoverageCheck (f p) where
+    disableCoverageCheck =
+        fmap disableCoverageCheck
