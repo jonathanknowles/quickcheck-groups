@@ -58,6 +58,7 @@ library quickcheck-classes-semigroup-internal
     hs-source-dirs:
         src/quickcheck-classes-semigroup-internal
     exposed-modules:
+        Data.Semigroup.Eq
         Test.QuickCheck.Classes.Semigroup.Tuple
     default-language:
         Haskell2010
@@ -78,6 +79,7 @@ library quickcheck-classes-semigroup-prelude
         Haskell2010
     build-depends:
         base >=4.7 && <5
+      , containers
       , groups
       , monoid-subclasses
       , QuickCheck

@@ -10,6 +10,7 @@ module Test.QuickCheck.Classes.Semigroup.Prelude
     , module Data.Monoid.Monus
     , module Data.Monoid.Null
     , module Data.Semigroup.Cancellative
+    , module Data.Semigroup.Eq
     , module Numeric.Natural
     , module Test.QuickCheck
     , module Test.QuickCheck.Classes.Semigroup
@@ -24,6 +25,7 @@ import Data.Monoid.GCD
 import Data.Monoid.Monus
 import Data.Monoid.Null
 import Data.Semigroup.Cancellative
+import Data.Semigroup.Eq
 import Numeric.Natural
 import Test.QuickCheck
 import Test.QuickCheck.Classes.Semigroup
