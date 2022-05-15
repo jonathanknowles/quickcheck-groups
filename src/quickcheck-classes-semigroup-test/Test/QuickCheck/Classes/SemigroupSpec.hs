@@ -55,7 +55,7 @@ import Test.QuickCheck.Property
 
 spec :: Spec
 spec = do
-    testLawsMany @()
+    testLawsMany @() $ disableCoverageCheck
         [ cancellativeGCDMonoidLaws
         , cancellativeLaws
         , commutativeLaws
