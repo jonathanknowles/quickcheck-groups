@@ -179,6 +179,9 @@ cancellativeGCDMonoidLaw_prefix a b c =
     makeProperty
         "gcd (a <> b) (a <> c) == a <> gcd b c"
         (gcd (a <> b) (a <> c) == a <> gcd b c)
+    & cover 1
+        (a /= mempty && gcd b c /= mempty && a /= gcd b c)
+        "a /= mempty && gcd b c /= mempty && a /= gcd b c"
 
 cancellativeGCDMonoidLaw_suffix
     :: (Eq a, Cancellative a, GCDMonoid a) => a -> a -> a -> Property
@@ -186,6 +189,9 @@ cancellativeGCDMonoidLaw_suffix a b c =
     makeProperty
         "gcd (a <> c) (b <> c) == gcd a b <> c"
         (gcd (a <> c) (b <> c) == gcd a b <> c)
+    & cover 1
+        (c /= mempty && gcd a b /= mempty && c /= gcd a b)
+        "c /= mempty && gcd a b /= mempty && c /= gcd a b"
 
 --------------------------------------------------------------------------------
 -- Commutative
