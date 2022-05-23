@@ -345,7 +345,7 @@ groupLaw_invert_mempty
     :: forall a. (Eq a, Group a) => Proxy a -> Property
 groupLaw_invert_mempty _ =
     makeProperty
-        "invert (mempty @a) == mempty"
+        "invert (mempty @a) == (mempty @a)"
         (invert (mempty @a) == (mempty @a))
 
 groupLaw_invert_mappend_1
