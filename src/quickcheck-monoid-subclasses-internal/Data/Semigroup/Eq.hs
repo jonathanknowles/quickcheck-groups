@@ -9,6 +9,7 @@ module Data.Semigroup.Eq where
 
 import Data.List
     ( nub )
+
 import Data.Foldable as F
 
 data NonNull

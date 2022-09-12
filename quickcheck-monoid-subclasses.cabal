@@ -61,6 +61,7 @@ library quickcheck-monoid-subclasses-internal
         src/quickcheck-monoid-subclasses-internal
     exposed-modules:
         Data.Semigroup.Eq
+        Test.QuickCheck.Classes.Semigroup.Internal
         Test.QuickCheck.Classes.Semigroup.Tuple
     default-language:
         Haskell2010
