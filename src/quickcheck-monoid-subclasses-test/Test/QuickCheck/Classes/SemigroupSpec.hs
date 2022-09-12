@@ -28,20 +28,22 @@ import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Semigroup
     ( cancellativeGCDMonoidLaws
-    , cancellativeLaws
-    , commutativeLaws
     , gcdMonoidLaws
     , groupLaws
-    , leftCancellativeLaws
     , leftGCDMonoidLaws
-    , leftReductiveLaws
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
     , positiveMonoidLaws
+    , rightGCDMonoidLaws
+    )
+import Test.QuickCheck.Classes.Semigroup.Cancellative
+    ( cancellativeLaws
+    , commutativeLaws
+    , leftCancellativeLaws
+    , leftReductiveLaws
     , reductiveLaws
     , rightCancellativeLaws
-    , rightGCDMonoidLaws
     , rightReductiveLaws
     )
 import Test.QuickCheck.Instances.ByteString
