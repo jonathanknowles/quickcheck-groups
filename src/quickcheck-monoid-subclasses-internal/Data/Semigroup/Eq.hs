@@ -5,14 +5,16 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Semigroup.Eq where
+module Data.Semigroup.Eq
+    ( allUnique
+    , canVerifyAllNonNull
+    )
+    where
 
 import Data.List
     ( nub )
 
 import Data.Foldable as F
-
-data NonNull
 
 allUnique :: (Eq a, Foldable f) => f a -> Bool
 allUnique as = length (nub xs) == length xs
