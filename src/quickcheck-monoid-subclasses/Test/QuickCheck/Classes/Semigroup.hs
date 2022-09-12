@@ -31,12 +31,6 @@ module Test.QuickCheck.Classes.Semigroup
     -- * Monus
     , monusLaws
 
-    -- * Null
-    , monoidNullLaws
-
-    -- * Positive
-    , positiveMonoidLaws
-
     -- * Group
     , groupLaws
     )
@@ -57,8 +51,6 @@ import Data.Monoid.GCD
     ( GCDMonoid (..) )
 import Data.Monoid.Monus
     ( Monus (..) )
-import Data.Monoid.Null
-    ( MonoidNull (..), PositiveMonoid )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
@@ -375,33 +367,6 @@ leftGCDMonoidLaw_stripCommonPrefix_stripPrefix_2 a b =
         (stripCommonPrefix a b & \(p, _, x) -> Just x == stripPrefix p b)
 
 --------------------------------------------------------------------------------
--- MonoidNull
---------------------------------------------------------------------------------
-
--- | 'Laws' for instances of 'MonoidNull'.
---
--- Tests the following property:
---
--- prop> null a == (a == mempty)
---
-monoidNullLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, MonoidNull a)
-    => Proxy a
-    -> Laws
-monoidNullLaws _ = Laws "MonoidNull"
-    [ makeLaw1 @a
-        "monoidNullLaw_basic"
-        (monoidNullLaw_basic)
-    ]
-
-monoidNullLaw_basic
-    :: (Eq a, MonoidNull a) => a -> Property
-monoidNullLaw_basic a =
-    makeProperty
-        "null a == (a == mempty)"
-        (null a == (a == mempty))
-
---------------------------------------------------------------------------------
 -- Monus
 --------------------------------------------------------------------------------
 
@@ -523,37 +488,6 @@ overlappingGCDMonoidLaw_stripOverlap_stripSuffixOverlap a b =
     makeProperty
         "stripOverlap a b & λ(x, _, _) -> x == stripSuffixOverlap b a"
         (stripOverlap a b & \(x, _, _) -> x == stripSuffixOverlap b a)
-
---------------------------------------------------------------------------------
--- PositiveMonoid
---------------------------------------------------------------------------------
-
--- | 'Laws' for instances of 'PositiveMonoid'.
---
--- Tests the following properties:
---
--- prop> null (a <> b) == (null a && null b)
---
--- Note that the following superclass laws are __not__ included:
---
--- * 'monoidNullLaws'
---
-positiveMonoidLaws
-    :: forall a. (Arbitrary a, Show a, Eq a, PositiveMonoid a)
-    => Proxy a
-    -> Laws
-positiveMonoidLaws _ = Laws "PositiveMonoid"
-    [ makeLaw2 @a
-        "positiveMonoidLaw_fundamental"
-        (positiveMonoidLaw_fundamental)
-    ]
-
-positiveMonoidLaw_fundamental
-    :: (Eq a, PositiveMonoid a) => a -> a -> Property
-positiveMonoidLaw_fundamental a b =
-    makeProperty
-        "null (a <> b) == (null a && null b)"
-        (null (a <> b) == (null a && null b))
 
 --------------------------------------------------------------------------------
 -- RightGCDMonoid
