@@ -43,6 +43,7 @@ library
     hs-source-dirs:
         src/quickcheck-monoid-subclasses
     exposed-modules:
+        Test.QuickCheck.Classes.Monoid.GCD
         Test.QuickCheck.Classes.Monoid.Null
         Test.QuickCheck.Classes.Semigroup
         Test.QuickCheck.Classes.Semigroup.Cancellative

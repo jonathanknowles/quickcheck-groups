@@ -26,17 +26,17 @@ import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Classes.Monoid.Null
-    ( monoidNullLaws, positiveMonoidLaws )
-import Test.QuickCheck.Classes.Semigroup
+import Test.QuickCheck.Classes.Monoid.GCD
     ( cancellativeGCDMonoidLaws
     , gcdMonoidLaws
-    , groupLaws
     , leftGCDMonoidLaws
-    , monusLaws
     , overlappingGCDMonoidLaws
     , rightGCDMonoidLaws
     )
+import Test.QuickCheck.Classes.Monoid.Null
+    ( monoidNullLaws, positiveMonoidLaws )
+import Test.QuickCheck.Classes.Semigroup
+    ( groupLaws, monusLaws )
 import Test.QuickCheck.Classes.Semigroup.Cancellative
     ( cancellativeLaws
     , commutativeLaws
