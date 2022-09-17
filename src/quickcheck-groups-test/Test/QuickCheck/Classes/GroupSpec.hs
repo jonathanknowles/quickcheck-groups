@@ -20,7 +20,7 @@ import Test.QuickCheck
 import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Group
-    ( groupLaws )
+    ( abelianLaws, groupLaws )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Instances.ByteString
@@ -35,11 +35,17 @@ import Test.QuickCheck.Property
 spec :: Spec
 spec = do
     testLawsMany @() $ disableCoverageCheck
-        [groupLaws]
+        [ abelianLaws
+        , groupLaws
+        ]
     testLawsMany @(Product TestRational)
-        [groupLaws]
+        [ abelianLaws
+        , groupLaws
+        ]
     testLawsMany @(Sum TestRational)
-        [groupLaws]
+        [ abelianLaws
+        , groupLaws
+        ]
 
 --------------------------------------------------------------------------------
 -- Test types
