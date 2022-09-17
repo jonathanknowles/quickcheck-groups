@@ -9,13 +9,18 @@ module Test.QuickCheck.Classes.Group
     (
     -- * Group
       groupLaws
+
+    -- * Abelian
+    , abelianLaws
     )
     where
 
 import Prelude
 
+import Data.Function
+    ( (&) )
 import Data.Group
-    ( Group (..) )
+    ( Abelian, Group (..) )
 import Data.Proxy
     ( Proxy (..) )
 import Test.QuickCheck
@@ -23,6 +28,7 @@ import Test.QuickCheck
     , NonNegative (..)
     , NonPositive (..)
     , Property
+    , cover
     , forAllShrink
     )
 import Test.QuickCheck.Classes
@@ -135,3 +141,33 @@ groupLaw_pow_nonPositive a =
     makeProperty
         "pow a n == invert (mconcat (replicate (abs n) a))"
         (pow a n == invert (mconcat (replicate (abs n) a)))
+
+--------------------------------------------------------------------------------
+-- Abelian
+--------------------------------------------------------------------------------
+
+-- | 'Laws' for instances of 'Abelian'.
+--
+-- Tests the following property:
+--
+-- prop> a <> b == b <> a
+--
+abelianLaws
+    :: forall a. (Arbitrary a, Show a, Eq a, Abelian a)
+    => Proxy a
+    -> Laws
+abelianLaws _ = Laws "Abelian"
+    [ makeLaw2 @a
+        "abelianLaw_commutative"
+        (abelianLaw_commutative)
+    ]
+
+abelianLaw_commutative
+    :: (Eq a, Abelian a) => a -> a -> Property
+abelianLaw_commutative a b =
+    makeProperty
+        "a <> b == b <> a"
+        (a <> b == b <> a)
+    & cover 1
+        ((a /= b) && (a <> b /= a) && (b <> a /= b))
+        "(a /= b) && (a <> b /= a) && (b <> a /= b)"
