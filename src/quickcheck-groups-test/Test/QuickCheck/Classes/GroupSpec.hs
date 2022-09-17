@@ -1,3 +1,4 @@
+{-# LANGUAGE DerivingVia #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- |
@@ -6,18 +7,22 @@
 --
 module Test.QuickCheck.Classes.GroupSpec where
 
+import Data.Bifunctor
+    ( bimap )
 import Data.Monoid
-    ( Sum (..) )
+    ( Product (..), Sum (..) )
+import Data.Ratio
+    ( denominator, numerator, (%) )
 import Test.Hspec
     ( Spec )
 import Test.QuickCheck
-    ( Property )
+    ( Arbitrary (..), NonZero (..), Property, choose, oneof )
 import Test.QuickCheck.Classes
     ( Laws (..) )
-import Test.QuickCheck.Classes.Hspec
-    ( testLawsMany )
 import Test.QuickCheck.Classes.Group
     ( groupLaws )
+import Test.QuickCheck.Classes.Hspec
+    ( testLawsMany )
 import Test.QuickCheck.Instances.ByteString
     ()
 import Test.QuickCheck.Instances.Natural
@@ -30,11 +35,28 @@ import Test.QuickCheck.Property
 spec :: Spec
 spec = do
     testLawsMany @() $ disableCoverageCheck
-        [ groupLaws
-        ]
-    testLawsMany @(Sum Int)
-        [ groupLaws
-        ]
+        [groupLaws]
+    testLawsMany @(Product TestRational)
+        [groupLaws]
+    testLawsMany @(Sum TestRational)
+        [groupLaws]
+
+--------------------------------------------------------------------------------
+-- Test types
+--------------------------------------------------------------------------------
+
+newtype TestRational = TestRational Rational
+    deriving stock (Eq, Show)
+    deriving newtype (Num, Fractional)
+
+instance Arbitrary TestRational where
+    arbitrary =
+        fmap TestRational $ (%) <$> genSmall <*> genSmall
+      where
+        genSmall = oneof [choose (-4, -1), choose (1, 4)]
+    shrink (TestRational r) =
+        TestRational . uncurry (%) . bimap getNonZero getNonZero
+            <$> shrink (NonZero (numerator r), NonZero (denominator r))
 
 --------------------------------------------------------------------------------
 -- Coverage checks
