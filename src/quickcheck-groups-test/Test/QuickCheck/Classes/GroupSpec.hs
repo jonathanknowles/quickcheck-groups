@@ -4,7 +4,7 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.SemigroupSpec where
+module Test.QuickCheck.Classes.GroupSpec where
 
 import Data.Monoid
     ( Sum (..) )
@@ -16,7 +16,7 @@ import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Classes.Semigroup
+import Test.QuickCheck.Classes.Group
     ( groupLaws )
 import Test.QuickCheck.Instances.ByteString
     ()

@@ -2,7 +2,7 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.Semigroup.Internal
+module Test.QuickCheck.Classes.Group.Internal
     ( makeLaw0
     , makeLaw1
     , makeLaw2
@@ -26,7 +26,7 @@ import Test.QuickCheck
     , cover
     , property
     )
-import Test.QuickCheck.Classes.Semigroup.Tuple
+import Test.QuickCheck.Classes.Group.Tuple
     ( Tuple1, Tuple2, Tuple3, evalTuple1, evalTuple2, evalTuple3 )
 
 makeLaw :: Testable t => String -> t -> (String, Property)
