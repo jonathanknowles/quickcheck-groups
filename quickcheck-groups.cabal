@@ -1,7 +1,7 @@
 cabal-version:  3.0
-name:           quickcheck-monoid-subclasses
+name:           quickcheck-groups
 version:        0.0.0
-bug-reports:    https://github.com/jonathanknowles/quickcheck-monoid-subclasses/issues
+bug-reports:    https://github.com/jonathanknowles/quickcheck-groups/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -9,13 +9,13 @@ maintainer:     mail@jonathanknowles.net
 copyright:      2022 Jonathan Knowles
 category:       Testing
 synopsis:       QuickCheck support for testing instances of classes defined in
-                the monoid-subclasses library.
+                the groups library.
 description:
 
     This library provides:
 
     * QuickCheck support for testing instances of classes defined in the
-      'monoid-subclasses' library.
+      'groups' library.
     * Reusable properties in the form of 'Laws' definitions.
 
 extra-source-files:
@@ -35,13 +35,13 @@ common common-extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/quickcheck-monoid-subclasses
+    location: https://github.com/jonathanknowles/quickcheck-groups
 
 library
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses
+        src/quickcheck-groups
     exposed-modules:
         Test.QuickCheck.Classes.Monoid.GCD
         Test.QuickCheck.Classes.Monoid.Null
@@ -55,13 +55,13 @@ library
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-monoid-subclasses-internal
+      , quickcheck-groups-internal
 
-library quickcheck-monoid-subclasses-internal
+library quickcheck-groups-internal
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses-internal
+        src/quickcheck-groups-internal
     exposed-modules:
         Data.Semigroup.Eq
         Test.QuickCheck.Classes.Semigroup.Internal
@@ -74,11 +74,11 @@ library quickcheck-monoid-subclasses-internal
       , pretty-show
       , semigroupoids
 
-library quickcheck-monoid-subclasses-prelude
+library quickcheck-groups-prelude
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses-prelude
+        src/quickcheck-groups-prelude
     exposed-modules:
         Test.QuickCheck.Classes.Semigroup.Prelude
     default-language:
@@ -89,17 +89,17 @@ library quickcheck-monoid-subclasses-prelude
       , groups
       , monoid-subclasses
       , QuickCheck
-      , quickcheck-monoid-subclasses
-      , quickcheck-monoid-subclasses-internal
+      , quickcheck-groups
+      , quickcheck-groups-internal
       , quickcheck-instances
 
-test-suite quickcheck-monoid-subclasses-test
+test-suite quickcheck-groups-test
     import:
         common-extensions
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/quickcheck-monoid-subclasses-test
+        src/quickcheck-groups-test
     other-modules:
         Test.QuickCheck.Classes.Hspec
         Test.QuickCheck.Classes.SemigroupSpec
@@ -117,6 +117,6 @@ test-suite quickcheck-monoid-subclasses-test
       , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-monoid-subclasses
+      , quickcheck-groups
       , quickcheck-instances
       , text
