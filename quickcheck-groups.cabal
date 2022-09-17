@@ -49,7 +49,6 @@ library
     build-depends:
         base >=4.7 && <5
       , groups
-      , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
       , quickcheck-groups-internal
@@ -84,7 +83,6 @@ library quickcheck-groups-prelude
         base >=4.7 && <5
       , containers
       , groups
-      , monoid-subclasses
       , QuickCheck
       , quickcheck-groups
       , quickcheck-groups-internal
@@ -111,7 +109,6 @@ test-suite quickcheck-groups-test
       , containers
       , groups
       , hspec
-      , monoid-subclasses
       , QuickCheck
       , quickcheck-classes
       , quickcheck-groups
