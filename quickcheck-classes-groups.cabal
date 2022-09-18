@@ -1,7 +1,7 @@
 cabal-version:  3.0
-name:           quickcheck-groups
+name:           quickcheck-classes-groups
 version:        0.0.0
-bug-reports:    https://github.com/jonathanknowles/quickcheck-groups/issues
+bug-reports:    https://github.com/jonathanknowles/quickcheck-classes-groups/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -35,13 +35,13 @@ common common-extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/quickcheck-groups
+    location: https://github.com/jonathanknowles/quickcheck-classes-groups
 
 library
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-groups
+        src/quickcheck-classes-groups
     exposed-modules:
         Test.QuickCheck.Classes.Group
     default-language:
@@ -51,13 +51,13 @@ library
       , groups
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-groups-internal
+      , quickcheck-classes-groups-internal
 
-library quickcheck-groups-internal
+library quickcheck-classes-groups-internal
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-groups-internal
+        src/quickcheck-classes-groups-internal
     exposed-modules:
         Data.Semigroup.Eq
         Test.QuickCheck.Classes.Group.Internal
@@ -70,11 +70,11 @@ library quickcheck-groups-internal
       , pretty-show
       , semigroupoids
 
-library quickcheck-groups-prelude
+library quickcheck-classes-groups-prelude
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-groups-prelude
+        src/quickcheck-classes-groups-prelude
     exposed-modules:
         Test.QuickCheck.Classes.Group.Prelude
     default-language:
@@ -84,17 +84,17 @@ library quickcheck-groups-prelude
       , containers
       , groups
       , QuickCheck
-      , quickcheck-groups
-      , quickcheck-groups-internal
+      , quickcheck-classes-groups
+      , quickcheck-classes-groups-internal
       , quickcheck-instances
 
-test-suite quickcheck-groups-test
+test-suite quickcheck-classes-groups-test
     import:
         common-extensions
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/quickcheck-groups-test
+        src/quickcheck-classes-groups-test
     other-modules:
         Test.QuickCheck.Classes.Hspec
         Test.QuickCheck.Classes.GroupSpec
@@ -111,6 +111,6 @@ test-suite quickcheck-groups-test
       , hspec
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-groups
+      , quickcheck-classes-groups
       , quickcheck-instances
       , text
