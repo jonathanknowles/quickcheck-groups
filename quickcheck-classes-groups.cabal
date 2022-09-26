@@ -41,7 +41,7 @@ library
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-classes-groups
+        src/public
     exposed-modules:
         Test.QuickCheck.Classes.Group
     default-language:
@@ -51,13 +51,13 @@ library
       , groups
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-classes-groups-internal
+      , quickcheck-classes-groups:internal
 
-library quickcheck-classes-groups-internal
+library internal
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-classes-groups-internal
+        src/internal
     exposed-modules:
         Data.Semigroup.Eq
         Test.QuickCheck.Classes.Group.Internal
@@ -70,11 +70,11 @@ library quickcheck-classes-groups-internal
       , pretty-show
       , semigroupoids
 
-library quickcheck-classes-groups-prelude
+library prelude
     import:
         common-extensions
     hs-source-dirs:
-        src/quickcheck-classes-groups-prelude
+        src/prelude
     exposed-modules:
         Test.QuickCheck.Classes.Group.Prelude
     default-language:
@@ -85,16 +85,16 @@ library quickcheck-classes-groups-prelude
       , groups
       , QuickCheck
       , quickcheck-classes-groups
-      , quickcheck-classes-groups-internal
+      , quickcheck-classes-groups:internal
       , quickcheck-instances
 
-test-suite quickcheck-classes-groups-test
+test-suite test
     import:
         common-extensions
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/quickcheck-classes-groups-test
+        src/test
     other-modules:
         Test.QuickCheck.Classes.Hspec
         Test.QuickCheck.Classes.GroupSpec
