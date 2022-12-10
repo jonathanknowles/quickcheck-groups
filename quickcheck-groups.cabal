@@ -1,7 +1,7 @@
 cabal-version:  3.0
-name:           quickcheck-classes-groups
+name:           quickcheck-groups
 version:        0.0.0
-bug-reports:    https://github.com/jonathanknowles/quickcheck-classes-groups/issues
+bug-reports:    https://github.com/jonathanknowles/quickcheck-groups/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -35,7 +35,7 @@ common common-extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/quickcheck-classes-groups
+    location: https://github.com/jonathanknowles/quickcheck-groups
 
 library
     import:
@@ -47,11 +47,11 @@ library
     default-language:
         Haskell2010
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
       , groups
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-classes-groups:internal
+      , quickcheck-groups:internal
 
 library internal
     import:
@@ -65,9 +65,9 @@ library internal
     default-language:
         Haskell2010
     build-depends:
-        base >=4.7 && <5
-      , QuickCheck
+      , base >=4.7 && <5
       , pretty-show
+      , QuickCheck
       , semigroupoids
 
 library prelude
@@ -80,12 +80,12 @@ library prelude
     default-language:
         Haskell2010
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
       , containers
       , groups
       , QuickCheck
-      , quickcheck-classes-groups
-      , quickcheck-classes-groups:internal
+      , quickcheck-groups
+      , quickcheck-groups:internal
       , quickcheck-instances
 
 test-suite test
@@ -104,13 +104,13 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
       , bytestring
       , containers
       , groups
       , hspec
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-classes-groups
+      , quickcheck-groups
       , quickcheck-instances
       , text
