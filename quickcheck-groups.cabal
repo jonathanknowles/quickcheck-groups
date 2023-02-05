@@ -87,6 +87,7 @@ library prelude
       , dependency-base
       , dependency-groups
       , dependency-QuickCheck
+      , dependency-quickcheck-classes
       , dependency-quickcheck-instances
       , extensions
     hs-source-dirs:
