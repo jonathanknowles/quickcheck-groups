@@ -4,7 +4,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.Group.Tuple
+module Internal.Semigroup.Tuple
     where
 
 import Data.List.NonEmpty

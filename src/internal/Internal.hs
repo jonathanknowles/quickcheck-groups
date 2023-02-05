@@ -17,6 +17,8 @@ import Data.Proxy
     ( Proxy (..) )
 import Internal.Semigroup.Eq
     ( allUnique, canVerifyAllNonNull )
+import Internal.Semigroup.Tuple
+    ( Tuple1, Tuple2, Tuple3, evalTuple1, evalTuple2, evalTuple3 )
 import Test.QuickCheck
     ( Arbitrary (..)
     , Property
@@ -26,8 +28,6 @@ import Test.QuickCheck
     , cover
     , property
     )
-import Test.QuickCheck.Classes.Group.Tuple
-    ( Tuple1, Tuple2, Tuple3, evalTuple1, evalTuple2, evalTuple3 )
 
 makeLaw :: Testable t => String -> t -> (String, Property)
 makeLaw title t = (title, checkCoverage $ property t)
