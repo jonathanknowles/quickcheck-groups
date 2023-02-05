@@ -26,6 +26,8 @@ import Data.Group
     ( Abelian, Group (..) )
 import Data.Proxy
     ( Proxy (..) )
+import Internal
+    ( makeLaw0, makeLaw1, makeLaw2, makeProperty )
 import Test.QuickCheck
     ( Arbitrary (..)
     , NonNegative (..)
@@ -36,8 +38,6 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
-import Test.QuickCheck.Classes.Group.Internal
-    ( makeLaw0, makeLaw1, makeLaw2, makeProperty )
 
 --------------------------------------------------------------------------------
 -- Group
