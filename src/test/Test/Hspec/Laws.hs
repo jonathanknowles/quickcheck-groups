@@ -1,12 +1,10 @@
-{-# LANGUAGE PolyKinds #-}
-
 -- |
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
 -- Provides testing functions to check that type class instances obey laws.
 --
-module Test.QuickCheck.Classes.Hspec
+module Test.Hspec.Laws
     ( testLaws
     , testLawsMany
     ) where

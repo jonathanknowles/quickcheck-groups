@@ -5,7 +5,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.GroupSpec where
+module ClassSpec where
 
 import Data.Bifunctor
     ( bimap )
@@ -15,26 +15,24 @@ import Data.Ratio
     ( denominator, numerator, (%) )
 import Test.Hspec
     ( Spec )
+import Test.Hspec.Laws
+    ( testLawsMany )
 import Test.QuickCheck
     ( Arbitrary (..), NonZero (..), Property, choose, oneof )
 import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Group
     ( abelianLaws, groupLaws )
-import Test.QuickCheck.Classes.Hspec
-    ( testLawsMany )
-import Test.QuickCheck.Instances.ByteString
-    ()
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
 import Test.QuickCheck.Property
     ( Result (..), mapTotalResult )
 
 spec :: Spec
 spec = do
     testLawsMany @() $ disableCoverageCheck
+        [ abelianLaws
+        , groupLaws
+        ]
+    testLawsMany @(Sum TestInteger)
         [ abelianLaws
         , groupLaws
         ]
@@ -50,6 +48,14 @@ spec = do
 --------------------------------------------------------------------------------
 -- Test types
 --------------------------------------------------------------------------------
+
+newtype TestInteger = TestInteger Integer
+    deriving stock (Eq, Show)
+    deriving newtype Num
+
+instance Arbitrary TestInteger where
+    arbitrary = TestInteger <$> choose (-4, 4)
+    shrink (TestInteger i) = TestInteger <$> shrink i
 
 newtype TestRational = TestRational Rational
     deriving stock (Eq, Show)
