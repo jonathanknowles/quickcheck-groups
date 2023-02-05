@@ -5,7 +5,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.GroupSpec where
+module ClassSpec where
 
 import Data.Bifunctor
     ( bimap )
