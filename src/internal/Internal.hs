@@ -15,7 +15,7 @@ import Data.Function
     ( (&) )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Semigroup.Eq
+import Internal.Semigroup.Eq
     ( allUnique, canVerifyAllNonNull )
 import Test.QuickCheck
     ( Arbitrary (..)

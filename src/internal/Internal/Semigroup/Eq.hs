@@ -5,7 +5,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Semigroup.Eq
+module Internal.Semigroup.Eq
     ( allUnique
     , canVerifyAllNonNull
     )
