@@ -74,6 +74,10 @@ import Test.QuickCheck.Classes
 -- __/Exponentiation/__
 --
 -- @
+-- 'pow' a 0 '==' 'mempty'
+-- @
+--
+-- @
 -- n '>=' 0 ==> 'pow' a n '==' \      \  'mconcat' ('replicate'  \   \ n  a)
 -- n '<=' 0 ==> 'pow' a n '==' 'invert' ('mconcat' ('replicate' ('abs' n) a))
 -- @
@@ -107,6 +111,9 @@ groupLaws _ = Laws "Group"
     , makeLaw2 @a
         "groupLaw_subtract_other"
         (groupLaw_subtract_other)
+    , makeLaw1 @a
+        "groupLaw_pow_zero"
+        (groupLaw_pow_zero)
     , makeLaw1 @a
         "groupLaw_pow_nonNegative"
         (groupLaw_pow_nonNegative)
@@ -201,6 +208,19 @@ groupLaw_subtract_other a b =
     & report
         "a <> invert b"
         (a <> invert b)
+
+groupLaw_pow_zero
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
+groupLaw_pow_zero a =
+    makeProperty
+        "pow a 0 == mempty"
+        (pow a 0 == mempty)
+    & report
+        "pow a 0"
+        (pow a 0)
+    & report
+        "mempty @a"
+        (mempty @a)
 
 groupLaw_pow_nonNegative
     :: (Eq a, Show a, Group a) => a -> Property
