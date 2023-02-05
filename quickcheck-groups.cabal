@@ -15,6 +15,7 @@ description:
   groups library.
 
 extra-source-files:
+    CHANGELOG.md
     README.md
 
 common dependency-base
