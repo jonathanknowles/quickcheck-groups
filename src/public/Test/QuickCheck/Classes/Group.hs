@@ -255,6 +255,21 @@ groupLaw_pow_nonNegative a =
     & report
         "mconcat (replicate n a)"
         (mconcat (replicate n a))
+    & cover
+        "n == 0"
+        (n == 0)
+    & cover
+        "n == 1"
+        (n == 1)
+    & cover
+        "n == 2"
+        (n == 2)
+    & cover
+        "n == 3"
+        (n == 3)
+    & cover
+        "n >= 4"
+        (n >= 4)
 
 groupLaw_pow_nonPositive
     :: (Eq a, Show a, Group a) => a -> Property
@@ -272,6 +287,21 @@ groupLaw_pow_nonPositive a =
     & report
         "invert (mconcat (replicate (abs n) a))"
         (invert (mconcat (replicate (abs n) a)))
+    & cover
+        "n == -0"
+        (n == -0)
+    & cover
+        "n == -1"
+        (n == -1)
+    & cover
+        "n == -2"
+        (n == -2)
+    & cover
+        "n == -3"
+        (n == -3)
+    & cover
+        "n <= -4"
+        (n <= -4)
 
 --------------------------------------------------------------------------------
 -- Abelian
