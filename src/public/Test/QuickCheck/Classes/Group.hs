@@ -27,13 +27,12 @@ import Data.Group
 import Data.Proxy
     ( Proxy (..) )
 import Internal
-    ( makeLaw0, makeLaw1, makeLaw2, makeProperty, report )
+    ( cover, makeLaw0, makeLaw1, makeLaw2, makeProperty, report )
 import Test.QuickCheck
     ( Arbitrary (..)
     , NonNegative (..)
     , NonPositive (..)
     , Property
-    , cover
     , forAllShrink
     )
 import Test.QuickCheck.Classes
@@ -276,6 +275,6 @@ abelianLaw_commutative a b =
     & report
         "b <> a"
         (b <> a)
-    & cover 1
-        ((a /= b) && (a <> b /= a) && (b <> a /= b))
+    & cover
         "(a /= b) && (a <> b /= a) && (b <> a /= b)"
+        ((a /= b) && (a <> b /= a) && (b <> a /= b))
