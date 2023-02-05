@@ -6,7 +6,7 @@
 --
 -- Provides testing functions to check that type class instances obey laws.
 --
-module Test.QuickCheck.Classes.Hspec
+module Test.Hspec.Laws
     ( testLaws
     , testLawsMany
     ) where

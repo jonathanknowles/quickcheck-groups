@@ -15,14 +15,14 @@ import Data.Ratio
     ( denominator, numerator, (%) )
 import Test.Hspec
     ( Spec )
+import Test.Hspec.Laws
+    ( testLawsMany )
 import Test.QuickCheck
     ( Arbitrary (..), NonZero (..), Property, choose, oneof )
 import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Group
     ( abelianLaws, groupLaws )
-import Test.QuickCheck.Classes.Hspec
-    ( testLawsMany )
 import Test.QuickCheck.Instances.ByteString
     ()
 import Test.QuickCheck.Instances.Natural

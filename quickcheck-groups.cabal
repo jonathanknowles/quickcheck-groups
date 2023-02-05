@@ -96,7 +96,7 @@ test-suite test
     hs-source-dirs:
         src/test
     other-modules:
-        Test.QuickCheck.Classes.Hspec
+        Test.Hspec.Laws
         Test.QuickCheck.Classes.GroupSpec
     type: exitcode-stdio-1.0
     default-language:
