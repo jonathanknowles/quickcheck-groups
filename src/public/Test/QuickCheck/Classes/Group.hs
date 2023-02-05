@@ -45,16 +45,45 @@ import Test.QuickCheck.Classes.Group.Internal
 
 -- | 'Laws' for instances of 'Group'.
 --
--- Tests the following properties:
+-- Includes the following laws:
 --
--- prop> invert mempty == mempty
--- prop> a <> invert a == mempty
--- prop> invert a <> a == mempty
--- prop> a ~~ mempty == a
--- prop> a ~~ a == mempty
--- prop> a ~~ b == a <> invert b
--- prop> n >= 0 ==> pow a n == mconcat (replicate n a)
--- prop> n <= 0 ==> pow a n == invert (mconcat (replicate (abs n) a))
+-- __/Inversion/__
+--
+-- @
+-- 'invert' 'mempty' '==' 'mempty'
+-- @
+--
+-- @
+-- \      \ a '<>' 'invert' a '==' 'mempty'
+-- 'invert' a '<>' \      \ a '==' 'mempty'
+-- @
+--
+-- __/Subtraction/__
+--
+-- @
+-- a '~~' 'mempty' '==' a
+-- @
+--
+-- @
+-- a '~~' a '==' 'mempty'
+-- @
+--
+-- @
+-- a '~~' b '==' a '<>' 'invert' b
+-- @
+--
+-- __/Exponentiation/__
+--
+-- @
+-- n '>=' 0 ==> 'pow' a n '==' \      \  'mconcat' ('replicate'  \   \ n  a)
+-- n '<=' 0 ==> 'pow' a n '==' 'invert' ('mconcat' ('replicate' ('abs' n) a))
+-- @
+--
+-- == Superclass laws
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'Test.QuickCheck.Classes.monoidLaws'
 --
 groupLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Group a)
@@ -151,9 +180,19 @@ groupLaw_pow_nonPositive a =
 
 -- | 'Laws' for instances of 'Abelian'.
 --
--- Tests the following property:
+-- Includes the following law:
 --
--- prop> a <> b == b <> a
+-- __/Commutativity/__
+--
+-- @
+-- a '<>' b '==' b '<>' a
+-- @
+--
+-- == Superclass laws
+--
+-- Note that the following superclass laws are __not__ included:
+--
+-- * 'Test.QuickCheck.Classes.Group.groupLaws'
 --
 abelianLaws
     :: forall a. (Arbitrary a, Show a, Eq a, Abelian a)
