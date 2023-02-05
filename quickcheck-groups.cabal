@@ -47,7 +47,7 @@ library
       , groups
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-groups:internal
+      , internal
 
 library internal
     import:
@@ -81,7 +81,7 @@ library prelude
       , groups
       , QuickCheck
       , quickcheck-groups
-      , quickcheck-groups:internal
+      , internal
       , quickcheck-instances
 
 test-suite test
