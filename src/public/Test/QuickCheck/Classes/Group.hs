@@ -5,6 +5,9 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
+-- This module provides 'Laws' definitions for classes exported by
+-- "Data.Group".
+--
 module Test.QuickCheck.Classes.Group
     (
     -- * Group
