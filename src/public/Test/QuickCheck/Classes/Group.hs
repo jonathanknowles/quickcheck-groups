@@ -27,7 +27,7 @@ import Data.Group
 import Data.Proxy
     ( Proxy (..) )
 import Internal
-    ( makeLaw0, makeLaw1, makeLaw2, makeProperty )
+    ( makeLaw0, makeLaw1, makeLaw2, makeProperty, report )
 import Test.QuickCheck
     ( Arbitrary (..)
     , NonNegative (..)
@@ -117,62 +117,122 @@ groupLaws _ = Laws "Group"
     ]
 
 groupLaw_invert_mempty
-    :: forall a. (Eq a, Group a) => Proxy a -> Property
+    :: forall a. (Eq a, Show a, Group a) => Proxy a -> Property
 groupLaw_invert_mempty _ =
     makeProperty
         "invert (mempty @a) == (mempty @a)"
         (invert (mempty @a) == (mempty @a))
+    & report
+        "mempty @a"
+        (mempty @a)
+    & report
+        "invert (mempty @a)"
+        (invert (mempty @a))
 
 groupLaw_invert_mappend_1
-    :: (Eq a, Group a) => a -> Property
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
 groupLaw_invert_mappend_1 a =
     makeProperty
         "a <> invert a == mempty"
         (a <> invert a == mempty)
+    & report
+        "mempty @a"
+        (mempty @a)
+    & report
+        "invert a"
+        (invert a)
+    & report
+        "a <> invert a"
+        (a <> invert a)
 
 groupLaw_invert_mappend_2
-    :: (Eq a, Group a) => a -> Property
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
 groupLaw_invert_mappend_2 a =
     makeProperty
         "invert a <> a == mempty"
         (invert a <> a == mempty)
+    & report
+        "mempty @a"
+        (mempty @a)
+    & report
+        "invert a"
+        (invert a)
+    & report
+        "invert a <> a"
+        (invert a <> a)
 
 groupLaw_subtract_mempty
-    :: (Eq a, Group a) => a -> Property
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
 groupLaw_subtract_mempty a =
     makeProperty
         "a ~~ mempty == a"
         (a ~~ mempty == a)
+    & report
+        "mempty @a"
+        (mempty @a)
+    & report
+        "a ~~ mempty"
+        (a ~~ mempty)
 
 groupLaw_subtract_self
-    :: (Eq a, Group a) => a -> Property
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
 groupLaw_subtract_self a =
     makeProperty
         "a ~~ a == mempty"
-        (a ~~ a == mempty)
+        (a ~~ a == mempty @a)
+    & report
+        "mempty @a"
+        (mempty @a)
+    & report
+        "a ~~ a"
+        (a ~~ a)
 
 groupLaw_subtract_other
-    :: (Eq a, Group a) => a -> a -> Property
+    :: (Eq a, Show a, Group a) => a -> a -> Property
 groupLaw_subtract_other a b =
     makeProperty
         "a ~~ b == a <> invert b"
         (a ~~ b == a <> invert b)
+    & report
+        "a ~~ b"
+        (a ~~ b)
+    & report
+        "invert b"
+        (invert b)
+    & report
+        "a <> invert b"
+        (a <> invert b)
 
 groupLaw_pow_nonNegative
-    :: (Eq a, Group a) => a -> Property
+    :: (Eq a, Show a, Group a) => a -> Property
 groupLaw_pow_nonNegative a =
     forAllShrink (arbitrary @(NonNegative Int)) shrink $ \(NonNegative n) ->
     makeProperty
         "pow a n == mconcat (replicate n a)"
         (pow a n == mconcat (replicate n a))
+    & report
+        "pow a n"
+        (pow a n)
+    & report
+        "mconcat (replicate n a)"
+        (mconcat (replicate n a))
 
 groupLaw_pow_nonPositive
-    :: (Eq a, Group a) => a -> Property
+    :: (Eq a, Show a, Group a) => a -> Property
 groupLaw_pow_nonPositive a =
     forAllShrink (arbitrary @(NonPositive Int)) shrink $ \(NonPositive n) ->
     makeProperty
         "pow a n == invert (mconcat (replicate (abs n) a))"
         (pow a n == invert (mconcat (replicate (abs n) a)))
+    & report
+        "pow a n"
+        (pow a n)
+    & report
+        "mconcat (replicate (abs n) a)"
+        (mconcat (replicate (abs n) a))
+    & report
+        "invert (mconcat (replicate (abs n) a))"
+        (invert (mconcat (replicate (abs n) a)))
 
 --------------------------------------------------------------------------------
 -- Abelian
@@ -205,11 +265,17 @@ abelianLaws _ = Laws "Abelian"
     ]
 
 abelianLaw_commutative
-    :: (Eq a, Abelian a) => a -> a -> Property
+    :: (Eq a, Show a, Abelian a) => a -> a -> Property
 abelianLaw_commutative a b =
     makeProperty
         "a <> b == b <> a"
         (a <> b == b <> a)
+    & report
+        "a <> b"
+        (a <> b)
+    & report
+        "b <> a"
+        (b <> a)
     & cover 1
         ((a /= b) && (a <> b /= a) && (b <> a /= b))
         "(a /= b) && (a <> b /= a) && (b <> a /= b)"
