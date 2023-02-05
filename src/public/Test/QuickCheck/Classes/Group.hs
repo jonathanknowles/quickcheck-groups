@@ -53,6 +53,10 @@ import Test.QuickCheck.Classes
 -- @
 --
 -- @
+-- 'invert' ('invert' a) '==' a
+-- @
+--
+-- @
 -- \      \ a '<>' 'invert' a '==' 'mempty'
 -- 'invert' a '<>' \      \ a '==' 'mempty'
 -- @
@@ -97,6 +101,9 @@ groupLaws _ = Laws "Group"
         "groupLaw_invert_mempty"
         (groupLaw_invert_mempty)
     , makeLaw1 @a
+        "groupLaw_invert_invert"
+        (groupLaw_invert_invert)
+    , makeLaw1 @a
         "groupLaw_invert_mappend_1"
         (groupLaw_invert_mappend_1)
     , makeLaw1 @a
@@ -134,6 +141,19 @@ groupLaw_invert_mempty _ =
     & report
         "invert (mempty @a)"
         (invert (mempty @a))
+
+groupLaw_invert_invert
+    :: forall a. (Eq a, Show a, Group a) => a -> Property
+groupLaw_invert_invert a =
+    makeProperty
+        "invert (invert a) == a"
+        (invert (invert a) == a)
+    & report
+        "invert a"
+        (invert a)
+    & report
+        "invert (invert a)"
+        (invert (invert a))
 
 groupLaw_invert_mappend_1
     :: forall a. (Eq a, Show a, Group a) => a -> Property
