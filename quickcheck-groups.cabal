@@ -8,15 +8,11 @@ author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2023 Jonathan Knowles
 category:       Testing
-synopsis:       QuickCheck support for testing instances of classes defined in
-                the groups library.
+synopsis:       Testing group class instances with QuickCheck
 description:
 
-    This library provides:
-
-    * QuickCheck support for testing instances of classes defined in the
-      'groups' library.
-    * Reusable properties in the form of 'Laws' definitions.
+  QuickCheck support for testing instances of type classes defined in the
+  groups library.
 
 extra-source-files:
     README.md
