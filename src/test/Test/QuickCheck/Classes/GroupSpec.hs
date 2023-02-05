@@ -38,6 +38,10 @@ spec = do
         [ abelianLaws
         , groupLaws
         ]
+    testLawsMany @(Sum TestInteger)
+        [ abelianLaws
+        , groupLaws
+        ]
     testLawsMany @(Product TestRational)
         [ abelianLaws
         , groupLaws
@@ -50,6 +54,14 @@ spec = do
 --------------------------------------------------------------------------------
 -- Test types
 --------------------------------------------------------------------------------
+
+newtype TestInteger = TestInteger Integer
+    deriving stock (Eq, Show)
+    deriving newtype Num
+
+instance Arbitrary TestInteger where
+    arbitrary = TestInteger <$> choose (-4, 4)
+    shrink (TestInteger i) = TestInteger <$> shrink i
 
 newtype TestRational = TestRational Rational
     deriving stock (Eq, Show)
