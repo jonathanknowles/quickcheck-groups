@@ -1,5 +1,3 @@
-{-# LANGUAGE PolyKinds #-}
-
 -- |
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
