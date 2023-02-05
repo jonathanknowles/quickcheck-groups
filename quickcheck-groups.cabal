@@ -17,7 +17,7 @@ description:
 extra-source-files:
     README.md
 
-common common-extensions
+common extensions
     default-extensions:
         DerivingStrategies
         FlexibleContexts
@@ -35,7 +35,7 @@ source-repository head
 
 library
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/public
     exposed-modules:
@@ -51,7 +51,7 @@ library
 
 library internal
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/internal
     exposed-modules:
@@ -68,7 +68,7 @@ library internal
 
 library prelude
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/prelude
     exposed-modules:
@@ -86,7 +86,7 @@ library prelude
 
 test-suite test
     import:
-        common-extensions
+        extensions
     main-is:
         Spec.hs
     hs-source-dirs:
