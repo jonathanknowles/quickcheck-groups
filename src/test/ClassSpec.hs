@@ -23,12 +23,6 @@ import Test.QuickCheck.Classes
     ( Laws (..) )
 import Test.QuickCheck.Classes.Group
     ( abelianLaws, groupLaws )
-import Test.QuickCheck.Instances.ByteString
-    ()
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
 import Test.QuickCheck.Property
     ( Result (..), mapTotalResult )
 
