@@ -2,7 +2,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Test.QuickCheck.Classes.Group.Prelude
+module Internal.Prelude
     ( module Data.Group
     , module Numeric.Natural
     , module Test.QuickCheck
