@@ -33,7 +33,7 @@ common dependency-quickcheck-classes
 common dependency-quickcheck-instances
     build-depends:quickcheck-instances          >= 0.3.28     && < 0.4
 common dependency-semigroupoids
-    build-depends:semigroupoids                 >= 5.3.7      && < 5.4
+    build-depends:semigroupoids                 >= 5.3.7      && < 6.1
 
 common extensions
     default-extensions:
