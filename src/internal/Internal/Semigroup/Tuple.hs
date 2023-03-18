@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {- HLINT ignore "Redundant bracket" -}
 
 -- |
@@ -7,10 +9,24 @@
 module Internal.Semigroup.Tuple
     where
 
+import Data.Functor
+    ( (<&>) )
 import Data.List.NonEmpty
     ( NonEmpty (..) )
+import GHC.Generics
+    ( Generic )
 import Test.QuickCheck
-    ( Arbitrary (..), Gen, choose, shuffle, suchThatMap )
+    ( Arbitrary (..)
+    , Gen
+    , applyArbitrary2
+    , applyArbitrary3
+    , applyArbitrary4
+    , choose
+    , genericShrink
+    , oneof
+    , shuffle
+    , suchThatMap
+    )
 import Text.Show.Pretty
     ( ppShow )
 
@@ -19,68 +35,111 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Semigroup.Foldable as F1
 
 --------------------------------------------------------------------------------
--- Tuple selectors
+-- Variables
 --------------------------------------------------------------------------------
 
-data TupleLens3
-    = TupleLens3A
-    | TupleLens3B
-    | TupleLens3C
+data Variable = A | B | C | D
     deriving (Bounded, Enum, Eq, Ord, Show)
 
-evalTupleLens3 :: (s, s, s) -> TupleLens3 -> s
-evalTupleLens3 (a, b, c) = \case
-    TupleLens3A -> a
-    TupleLens3B -> b
-    TupleLens3C -> c
+bindVariable :: BindingSet s -> Variable -> s
+bindVariable BindingSet {bindingForA} A = bindingForA
+bindVariable BindingSet {bindingForB} B = bindingForB
+bindVariable BindingSet {bindingForC} C = bindingForC
+bindVariable BindingSet {bindingForD} D = bindingForD
 
 --------------------------------------------------------------------------------
--- Semigroup combinations
+-- Variable sums
 --------------------------------------------------------------------------------
 
-newtype Combination3 = Combination3 (NonEmpty TupleLens3)
-    deriving (Eq, Ord, Show)
+newtype VariableSum = VariableSum (NonEmpty Variable)
+    deriving (Eq, Ord, Semigroup)
 
-arbitraryCombination3 :: Gen Combination3
-arbitraryCombination3 =
-    Combination3 <$> arbitraryTupleLensList `suchThatMap` NE.nonEmpty
+instance Arbitrary VariableSum where
+    arbitrary = genVariableSum
+
+instance Show VariableSum where
+    show (VariableSum vs) = F1.intercalate1 " <> " $ show <$> vs
+
+a = VariableSum (A :| [])
+b = VariableSum (B :| [])
+c = VariableSum (C :| [])
+d = VariableSum (D :| [])
+
+genVariableSum :: Gen VariableSum
+genVariableSum =
+    VariableSum <$> genVariableList `suchThatMap` NE.nonEmpty
   where
-    arbitraryTupleLensList :: Gen [TupleLens3]
-    arbitraryTupleLensList = do
-        itemCount <- choose (1, 3)
+    genVariableList :: Gen [Variable]
+    genVariableList = do
+        itemCount <- choose (1, 4)
         take itemCount <$> shuffle universe
 
-evalCombination3 :: (s, s, s) -> Combination3 -> NonEmpty s
-evalCombination3 tuple (Combination3 selectors) =
-    evalTupleLens3 tuple <$> selectors
+bindVariableSum :: BindingSet s -> VariableSum -> NonEmpty s
+bindVariableSum tuple (VariableSum selectors) =
+    bindVariable tuple <$> selectors
 
-showCombination3 :: Show s => (s, s, s) -> Combination3 -> String
-showCombination3 tuple =
-    F1.intercalateMap1 " <> " show . evalCombination3 tuple
+evalVariableSum :: Semigroup s => BindingSet s -> VariableSum -> s
+evalVariableSum = (F1.fold1 .) . bindVariableSum
+
+showVariableSum :: Show s => (BindingSet s) -> VariableSum -> String
+showVariableSum tuple =
+    F1.intercalateMap1 " <> " show . bindVariableSum tuple
 
 --------------------------------------------------------------------------------
--- Semigroup tuples
+-- Binding sets (for variables)
 --------------------------------------------------------------------------------
 
-data Tuple1 s = Tuple1 Combination3 (s, s, s)
+data BindingSet s = BindingSet
+    { bindingForA :: s
+    , bindingForB :: s
+    , bindingForC :: s
+    , bindingForD :: s
+    }
+    deriving (Eq, Generic, Ord)
+
+instance Show s => Show (BindingSet s) where
+    show (BindingSet va vb vc vd) = mconcat
+        [ "BindingSet {"
+        , "a = " <> show va <> ", "
+        , "b = " <> show vb <> ", "
+        , "c = " <> show vc <> ", "
+        , "d = " <> show vd
+        , "}"
+        ]
+
+instance Arbitrary s => Arbitrary (BindingSet s) where
+    arbitrary = genBindingSet
+    shrink = shrinkBindingSet
+
+genBindingSet :: Arbitrary s => Gen (BindingSet s)
+genBindingSet = applyArbitrary4 BindingSet
+
+shrinkBindingSet :: Arbitrary s => BindingSet s -> [BindingSet s]
+shrinkBindingSet = genericShrink
+
+--------------------------------------------------------------------------------
+-- Tuples
+--------------------------------------------------------------------------------
+
+data Tuple1 s = Tuple1 VariableSum (BindingSet s)
     deriving (Eq, Ord)
 
-data Tuple2 s = Tuple2 Combination3 Combination3 (s, s, s)
+data Tuple2 s = Tuple2 VariableSum VariableSum (BindingSet s)
     deriving (Eq, Ord)
 
-data Tuple3 s = Tuple3 Combination3 Combination3 Combination3 (s, s, s)
+data Tuple3 s = Tuple3 VariableSum VariableSum VariableSum (BindingSet s)
     deriving (Eq, Ord)
 
 instance Arbitrary a => Arbitrary (Tuple1 a) where
-    arbitrary = arbitraryTuple1
+    arbitrary = genTuple1
     shrink = shrinkTuple1
 
 instance Arbitrary a => Arbitrary (Tuple2 a) where
-    arbitrary = arbitraryTuple2
+    arbitrary = genTuple2
     shrink = shrinkTuple2
 
 instance Arbitrary a => Arbitrary (Tuple3 a) where
-    arbitrary = arbitraryTuple3
+    arbitrary = genTuple3
     shrink = shrinkTuple3
 
 instance (Show s, Semigroup s) => Show (Tuple1 s) where
@@ -92,58 +151,99 @@ instance (Show s, Semigroup s) => Show (Tuple2 s) where
 instance (Show s, Semigroup s) => Show (Tuple3 s) where
     show = showTuple3
 
-arbitraryTuple1 :: Arbitrary a => Gen (Tuple1 a)
-arbitraryTuple1 = Tuple1
-    <$> arbitraryCombination3
-    <*> arbitrary
+genTuple1 :: Arbitrary a => Gen (Tuple1 a)
+genTuple1 = applyArbitrary2 Tuple1
 
-arbitraryTuple2 :: Arbitrary a => Gen (Tuple2 a)
-arbitraryTuple2 = Tuple2
-    <$> arbitraryCombination3
-    <*> arbitraryCombination3
-    <*> arbitrary
+genTuple2 :: forall a. Arbitrary a => Gen (Tuple2 a)
+genTuple2 = oneof [genRandom, genHandChosen]
+  where
+    genRandom :: Gen (Tuple2 a)
+    genRandom = applyArbitrary3 Tuple2
 
-arbitraryTuple3 :: Arbitrary a => Gen (Tuple3 a)
-arbitraryTuple3 = Tuple3
-    <$> arbitraryCombination3
-    <*> arbitraryCombination3
-    <*> arbitraryCombination3
-    <*> arbitrary
+    genHandChosen :: Gen (Tuple2 a)
+    genHandChosen = oneof $ fmap (arbitrary <&>)
+        [ -- All identical:
+          Tuple2 a a
+        , -- All different:
+          Tuple2 a b
+          -- Shared common prefix:
+        , Tuple2 (a <> b) (a <> c)
+          -- Shared common suffix:
+        , Tuple2 (a <> c) (b <> c)
+          -- Shared common overlap (left to right):
+        , Tuple2 (a <> b) (b <> c)
+          -- Shared common overlap (right to left):
+        , Tuple2 (c <> b) (b <> a)
+          -- Append to the RHS (from left to right):
+        , Tuple2 (a) (a <> b)
+          -- Append to the RHS (from right to left):
+        , Tuple2 (a <> b) (a)
+          -- Append to the LHS (from left to right):
+        , Tuple2 (b) (a <> b)
+          -- Append to the LHS (from right to left):
+        , Tuple2 (a <> b) (b)
+        ]
+
+genTuple3 :: forall a. Arbitrary a => Gen (Tuple3 a)
+genTuple3 = oneof [genRandom, genHandChosen]
+  where
+    genRandom :: Gen (Tuple3 a)
+    genRandom = applyArbitrary4 Tuple3
+
+    genHandChosen :: Gen (Tuple3 a)
+    genHandChosen = oneof $ fmap (arbitrary <&>)
+        [ -- All identical:
+          Tuple3 a a a
+          -- All different:
+        , Tuple3 a b c
+          -- Shared common prefix:
+        , Tuple3 (a <> b) (a <> c) (a <> d)
+          -- Shared common suffix:
+        , Tuple3 (a <> d) (b <> d) (c <> d)
+          -- Append to the RHS (from left to right):
+        , Tuple3 (a) (a <> b) (a <> b <> c)
+          -- Append to the RHS (from right to left):
+        , Tuple3 (a <> b <> c) (a <> b) (a)
+          -- Append to the LHS (from left to right):
+        , Tuple3 (c) (b <> c) (a <> b <> c)
+          -- Append to the LHS (from right to left):
+        , Tuple3 (a <> b <> c) (b <> c) (c)
+        ]
 
 evalTuple1 :: Semigroup s => Tuple1 s -> s
 evalTuple1 (Tuple1 c1 t) =
-    ( F1.fold1 $ evalCombination3 t c1
+    ( evalVariableSum t c1
     )
 
 evalTuple2 :: Semigroup s => Tuple2 s -> (s, s)
 evalTuple2 (Tuple2 c1 c2 t) =
-    ( F1.fold1 $ evalCombination3 t c1
-    , F1.fold1 $ evalCombination3 t c2
+    ( evalVariableSum t c1
+    , evalVariableSum t c2
     )
 
 evalTuple3 :: Semigroup s => Tuple3 s -> (s, s, s)
 evalTuple3 (Tuple3 c1 c2 c3 t) =
-    ( F1.fold1 $ evalCombination3 t c1
-    , F1.fold1 $ evalCombination3 t c2
-    , F1.fold1 $ evalCombination3 t c3
+    ( evalVariableSum t c1
+    , evalVariableSum t c2
+    , evalVariableSum t c3
     )
 
 showTuple1 :: (Semigroup a, Show a) => Tuple1 a -> String
-showTuple1 (evalTuple1 -> a) = unlines
-    [ mempty, "a:", showWrap a
+showTuple1 (evalTuple1 -> va) = unlines
+    [ mempty, "a:", showWrap va
     ]
 
 showTuple2 :: (Semigroup a, Show a) => Tuple2 a -> String
-showTuple2 (evalTuple2 -> (a, b)) = unlines
-    [ mempty, "a:", showWrap a
-    , mempty, "b:", showWrap b
+showTuple2 (evalTuple2 -> (va, vb)) = unlines
+    [ mempty, "a:", showWrap va
+    , mempty, "b:", showWrap vb
     ]
 
 showTuple3 :: (Semigroup a, Show a) => Tuple3 a -> String
-showTuple3 (evalTuple3 -> (a, b, c)) = unlines
-    [ mempty, "a:", showWrap a
-    , mempty, "b:", showWrap b
-    , mempty, "c:", showWrap c
+showTuple3 (evalTuple3 -> (va, vb, vc)) = unlines
+    [ mempty, "a:", showWrap va
+    , mempty, "b:", showWrap vb
+    , mempty, "c:", showWrap vc
     ]
 
 shrinkTuple1 :: Arbitrary a => Tuple1 a -> [Tuple1 a]
