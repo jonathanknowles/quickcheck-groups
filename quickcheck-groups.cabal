@@ -19,9 +19,9 @@ extra-source-files:
     README.md
 
 common dependency-base
-    build-depends:base                          >= 4.14.3.0   && < 4.19
+    build-depends:base                          >= 4.14.3.0   && < 4.20
 common dependency-hspec
-    build-depends:hspec                         >= 2.10.7     && < 2.11
+    build-depends:hspec                         >= 2.10.7     && < 2.12
 common dependency-groups
     build-depends:groups                        >= 0.5.3      && < 0.6
 common dependency-pretty-show
