@@ -3,7 +3,7 @@
 {- HLINT ignore "Redundant bracket" -}
 
 -- |
--- Copyright: © 2022–2023 Jonathan Knowles
+-- Copyright: © 2022–2024 Jonathan Knowles
 -- License: Apache-2.0
 --
 module Internal.Semigroup.Tuple
