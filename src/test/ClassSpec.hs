@@ -2,7 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- |
--- Copyright: © 2022–2023 Jonathan Knowles
+-- Copyright: © 2022–2024 Jonathan Knowles
 -- License: Apache-2.0
 --
 module ClassSpec where
