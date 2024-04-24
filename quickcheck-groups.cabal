@@ -14,7 +14,7 @@ description:
   QuickCheck support for testing instances of type classes defined in the
   groups library.
 
-extra-source-files:
+extra-doc-files:
     CHANGELOG.md
     README.md
 
