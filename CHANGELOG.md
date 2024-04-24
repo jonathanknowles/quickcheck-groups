@@ -1,3 +1,7 @@
+# 0.0.1.2
+
+- Bumped upper version bounds of dependencies.
+
 # 0.0.1.1
 
 - Added support for GHC `9.8`.
