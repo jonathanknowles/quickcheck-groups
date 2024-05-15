@@ -14,5 +14,3 @@ import Data.Group
 import Numeric.Natural
 import Test.QuickCheck
 import Test.QuickCheck.Classes.Group
-import Test.QuickCheck.Instances.Natural
-    ()

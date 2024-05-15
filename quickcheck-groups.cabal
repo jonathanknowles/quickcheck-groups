@@ -30,8 +30,6 @@ common dependency-QuickCheck
     build-depends:QuickCheck                    >= 2.14.2     && < 2.16
 common dependency-quickcheck-classes
     build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
-common dependency-quickcheck-instances
-    build-depends:quickcheck-instances          >= 0.3.28     && < 0.4
 common dependency-semigroupoids
     build-depends:semigroupoids                 >= 5.3.7      && < 6.1
 
@@ -89,7 +87,6 @@ library prelude
       , dependency-groups
       , dependency-QuickCheck
       , dependency-quickcheck-classes
-      , dependency-quickcheck-instances
       , extensions
     hs-source-dirs:
         src/prelude
