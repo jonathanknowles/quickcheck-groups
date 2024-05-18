@@ -19,7 +19,7 @@ extra-doc-files:
     README.md
 
 common dependency-base
-    build-depends:base                          >= 4.14.3.0   && < 4.20
+    build-depends:base                          >= 4.14.3.0   && < 4.21
 common dependency-hspec
     build-depends:hspec                         >= 2.10.7     && < 2.12
 common dependency-groups
