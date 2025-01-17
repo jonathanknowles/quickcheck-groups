@@ -1,12 +1,12 @@
 cabal-version:  3.0
 name:           quickcheck-groups
-version:        0.0.1.3
+version:        0.0.1.4
 bug-reports:    https://github.com/jonathanknowles/quickcheck-groups/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
-copyright:      2022–2024 Jonathan Knowles
+copyright:      2022–2025 Jonathan Knowles
 category:       Testing
 synopsis:       Testing group class instances with QuickCheck
 description:
@@ -19,7 +19,7 @@ extra-doc-files:
     README.md
 
 common dependency-base
-    build-depends:base                          >= 4.14.3.0   && < 4.21
+    build-depends:base                          >= 4.14.3.0   && < 4.22
 common dependency-hspec
     build-depends:hspec                         >= 2.10.7     && < 2.12
 common dependency-groups
