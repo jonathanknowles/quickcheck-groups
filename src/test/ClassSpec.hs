@@ -15,8 +15,8 @@ import Data.Ratio
     ( denominator, numerator, (%) )
 import Test.Hspec
     ( Spec )
-import Test.Hspec.Laws
-    ( testLawsMany )
+import Test.Hspec.QuickCheck.Classes
+    ( testLaws )
 import Test.QuickCheck
     ( Arbitrary (..), NonZero (..), Property, choose, oneof )
 import Test.QuickCheck.Classes
@@ -28,19 +28,19 @@ import Test.QuickCheck.Property
 
 spec :: Spec
 spec = do
-    testLawsMany @() $ disableCoverageCheck
+    testLaws @() $ disableCoverageCheck
         [ abelianLaws
         , groupLaws
         ]
-    testLawsMany @(Sum TestInteger)
+    testLaws @(Sum TestInteger)
         [ abelianLaws
         , groupLaws
         ]
-    testLawsMany @(Product TestRational)
+    testLaws @(Product TestRational)
         [ abelianLaws
         , groupLaws
         ]
-    testLawsMany @(Sum TestRational)
+    testLaws @(Sum TestRational)
         [ abelianLaws
         , groupLaws
         ]
