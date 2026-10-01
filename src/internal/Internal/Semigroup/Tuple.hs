@@ -60,6 +60,7 @@ instance Arbitrary VariableSum where
 instance Show VariableSum where
     show (VariableSum vs) = F1.intercalate1 " <> " $ show <$> vs
 
+a, b, c, d :: VariableSum
 a = VariableSum (A :| [])
 b = VariableSum (B :| [])
 c = VariableSum (C :| [])

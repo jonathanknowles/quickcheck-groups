@@ -23,7 +23,7 @@ import Prelude
 import Data.Function
     ( (&) )
 import Data.Group
-    ( Abelian, Group (..) )
+    ( Abelian, Group (invert, (~~)) )
 import Data.Proxy
     ( Proxy (..) )
 import Internal
@@ -37,6 +37,8 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( Laws (..) )
+
+import qualified Data.Group as Group
 
 --------------------------------------------------------------------------------
 -- Group
@@ -348,3 +350,12 @@ abelianLaw_commutative a b =
     & cover
         "(a /= b) && (a <> b /= a) && (b <> a /= b)"
         ((a /= b) && (a <> b /= a) && (b <> a /= b))
+
+--------------------------------------------------------------------------------
+-- Internal
+--------------------------------------------------------------------------------
+
+-- | Specialised version of `pow` to avoid type defaulting.
+--
+pow :: Group m => m -> Int -> m
+pow = Group.pow
